@@ -1,15 +1,11 @@
 const { PrismaClient } = require("../src/generated/client");
-const { PrismaBetterSqlite3 } = require("@prisma/adapter-better-sqlite3");
 const crypto = require("crypto");
 
 function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
 }
 
-const adapter = new PrismaBetterSqlite3({
-  url: process.env.DATABASE_URL || "file:./prisma/dev.db",
-});
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 async function seed() {
   console.log("🌱 Starting database seeding...");

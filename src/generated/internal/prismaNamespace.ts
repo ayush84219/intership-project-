@@ -450,10 +450,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
           args: Prisma.UserCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
-        createManyAndReturn: {
-          args: Prisma.UserCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
-        }
         delete: {
           args: Prisma.UserDeleteArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
@@ -469,10 +465,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         updateMany: {
           args: Prisma.UserUpdateManyArgs<ExtArgs>
           result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.UserUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
         }
         upsert: {
           args: Prisma.UserUpsertArgs<ExtArgs>
@@ -524,10 +516,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
           args: Prisma.ProfileCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
-        createManyAndReturn: {
-          args: Prisma.ProfileCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>[]
-        }
         delete: {
           args: Prisma.ProfileDeleteArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>
@@ -543,10 +531,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         updateMany: {
           args: Prisma.ProfileUpdateManyArgs<ExtArgs>
           result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ProfileUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>[]
         }
         upsert: {
           args: Prisma.ProfileUpsertArgs<ExtArgs>
@@ -598,10 +582,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
           args: Prisma.CompanyProfileCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
-        createManyAndReturn: {
-          args: Prisma.CompanyProfileCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyProfilePayload>[]
-        }
         delete: {
           args: Prisma.CompanyProfileDeleteArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyProfilePayload>
@@ -617,10 +597,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         updateMany: {
           args: Prisma.CompanyProfileUpdateManyArgs<ExtArgs>
           result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.CompanyProfileUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyProfilePayload>[]
         }
         upsert: {
           args: Prisma.CompanyProfileUpsertArgs<ExtArgs>
@@ -672,10 +648,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
           args: Prisma.TeacherProfileCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
-        createManyAndReturn: {
-          args: Prisma.TeacherProfileCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherProfilePayload>[]
-        }
         delete: {
           args: Prisma.TeacherProfileDeleteArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherProfilePayload>
@@ -691,10 +663,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         updateMany: {
           args: Prisma.TeacherProfileUpdateManyArgs<ExtArgs>
           result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.TeacherProfileUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherProfilePayload>[]
         }
         upsert: {
           args: Prisma.TeacherProfileUpsertArgs<ExtArgs>
@@ -746,10 +714,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
           args: Prisma.StudentEndorsementCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
-        createManyAndReturn: {
-          args: Prisma.StudentEndorsementCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEndorsementPayload>[]
-        }
         delete: {
           args: Prisma.StudentEndorsementDeleteArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEndorsementPayload>
@@ -765,10 +729,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         updateMany: {
           args: Prisma.StudentEndorsementUpdateManyArgs<ExtArgs>
           result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.StudentEndorsementUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEndorsementPayload>[]
         }
         upsert: {
           args: Prisma.StudentEndorsementUpsertArgs<ExtArgs>
@@ -820,10 +780,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
           args: Prisma.PostedJobCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
-        createManyAndReturn: {
-          args: Prisma.PostedJobCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostedJobPayload>[]
-        }
         delete: {
           args: Prisma.PostedJobDeleteArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$PostedJobPayload>
@@ -839,10 +795,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         updateMany: {
           args: Prisma.PostedJobUpdateManyArgs<ExtArgs>
           result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.PostedJobUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostedJobPayload>[]
         }
         upsert: {
           args: Prisma.PostedJobUpsertArgs<ExtArgs>
@@ -894,10 +846,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
           args: Prisma.ApplicationCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
-        createManyAndReturn: {
-          args: Prisma.ApplicationCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationPayload>[]
-        }
         delete: {
           args: Prisma.ApplicationDeleteArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationPayload>
@@ -913,10 +861,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         updateMany: {
           args: Prisma.ApplicationUpdateManyArgs<ExtArgs>
           result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ApplicationUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationPayload>[]
         }
         upsert: {
           args: Prisma.ApplicationUpsertArgs<ExtArgs>
@@ -968,10 +912,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
           args: Prisma.SavedJobCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
-        createManyAndReturn: {
-          args: Prisma.SavedJobCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedJobPayload>[]
-        }
         delete: {
           args: Prisma.SavedJobDeleteArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedJobPayload>
@@ -987,10 +927,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         updateMany: {
           args: Prisma.SavedJobUpdateManyArgs<ExtArgs>
           result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.SavedJobUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedJobPayload>[]
         }
         upsert: {
           args: Prisma.SavedJobUpsertArgs<ExtArgs>
@@ -1042,10 +978,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
           args: Prisma.DegreeKeywordMappingCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
-        createManyAndReturn: {
-          args: Prisma.DegreeKeywordMappingCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DegreeKeywordMappingPayload>[]
-        }
         delete: {
           args: Prisma.DegreeKeywordMappingDeleteArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$DegreeKeywordMappingPayload>
@@ -1061,10 +993,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         updateMany: {
           args: Prisma.DegreeKeywordMappingUpdateManyArgs<ExtArgs>
           result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.DegreeKeywordMappingUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DegreeKeywordMappingPayload>[]
         }
         upsert: {
           args: Prisma.DegreeKeywordMappingUpsertArgs<ExtArgs>
@@ -1114,6 +1042,9 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
  */
 
 export const TransactionIsolationLevel = runtime.makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 } as const)
 
@@ -1306,6 +1237,156 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const UserOrderByRelevanceFieldEnum = {
+  id: 'id',
+  email: 'email',
+  name: 'name',
+  password: 'password',
+  role: 'role',
+  verificationStatus: 'verificationStatus',
+  verificationNote: 'verificationNote',
+  collegeName: 'collegeName',
+  companyName: 'companyName',
+  department: 'department',
+  designation: 'designation',
+  employeeId: 'employeeId',
+  studentId: 'studentId',
+  phone: 'phone',
+  website: 'website',
+  bio: 'bio',
+  avatarUrl: 'avatarUrl',
+  location: 'location'
+} as const
+
+export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
+export const ProfileOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  degree: 'degree',
+  college: 'college',
+  studentId: 'studentId',
+  skills: 'skills',
+  targetRoles: 'targetRoles',
+  resumeUrl: 'resumeUrl',
+  githubUrl: 'githubUrl',
+  linkedinUrl: 'linkedinUrl',
+  portfolioUrl: 'portfolioUrl',
+  gpa: 'gpa',
+  graduationYear: 'graduationYear',
+  bio: 'bio'
+} as const
+
+export type ProfileOrderByRelevanceFieldEnum = (typeof ProfileOrderByRelevanceFieldEnum)[keyof typeof ProfileOrderByRelevanceFieldEnum]
+
+
+export const CompanyProfileOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companyName: 'companyName',
+  tagline: 'tagline',
+  industry: 'industry',
+  companySize: 'companySize',
+  website: 'website',
+  headquarters: 'headquarters',
+  about: 'about',
+  foundedYear: 'foundedYear',
+  logoUrl: 'logoUrl'
+} as const
+
+export type CompanyProfileOrderByRelevanceFieldEnum = (typeof CompanyProfileOrderByRelevanceFieldEnum)[keyof typeof CompanyProfileOrderByRelevanceFieldEnum]
+
+
+export const TeacherProfileOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  collegeName: 'collegeName',
+  department: 'department',
+  designation: 'designation',
+  facultyId: 'facultyId',
+  officialEmail: 'officialEmail',
+  officeLocation: 'officeLocation',
+  bio: 'bio'
+} as const
+
+export type TeacherProfileOrderByRelevanceFieldEnum = (typeof TeacherProfileOrderByRelevanceFieldEnum)[keyof typeof TeacherProfileOrderByRelevanceFieldEnum]
+
+
+export const StudentEndorsementOrderByRelevanceFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  teacherId: 'teacherId',
+  skill: 'skill',
+  endorsement: 'endorsement'
+} as const
+
+export type StudentEndorsementOrderByRelevanceFieldEnum = (typeof StudentEndorsementOrderByRelevanceFieldEnum)[keyof typeof StudentEndorsementOrderByRelevanceFieldEnum]
+
+
+export const PostedJobOrderByRelevanceFieldEnum = {
+  id: 'id',
+  recruiterId: 'recruiterId',
+  recruiterEmail: 'recruiterEmail',
+  recruiterName: 'recruiterName',
+  title: 'title',
+  company: 'company',
+  location: 'location',
+  salary: 'salary',
+  category: 'category',
+  workType: 'workType',
+  duration: 'duration',
+  description: 'description',
+  skills: 'skills',
+  requirements: 'requirements',
+  applyUrl: 'applyUrl',
+  status: 'status'
+} as const
+
+export type PostedJobOrderByRelevanceFieldEnum = (typeof PostedJobOrderByRelevanceFieldEnum)[keyof typeof PostedJobOrderByRelevanceFieldEnum]
+
+
+export const ApplicationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  jobId: 'jobId',
+  title: 'title',
+  company: 'company',
+  location: 'location',
+  source: 'source',
+  applyUrl: 'applyUrl',
+  status: 'status',
+  coverLetter: 'coverLetter',
+  notes: 'notes'
+} as const
+
+export type ApplicationOrderByRelevanceFieldEnum = (typeof ApplicationOrderByRelevanceFieldEnum)[keyof typeof ApplicationOrderByRelevanceFieldEnum]
+
+
+export const SavedJobOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  jobId: 'jobId',
+  title: 'title',
+  company: 'company',
+  location: 'location',
+  salary: 'salary',
+  source: 'source',
+  applyUrl: 'applyUrl'
+} as const
+
+export type SavedJobOrderByRelevanceFieldEnum = (typeof SavedJobOrderByRelevanceFieldEnum)[keyof typeof SavedJobOrderByRelevanceFieldEnum]
+
+
+export const DegreeKeywordMappingOrderByRelevanceFieldEnum = {
+  id: 'id',
+  degree: 'degree',
+  keywords: 'keywords'
+} as const
+
+export type DegreeKeywordMappingOrderByRelevanceFieldEnum = (typeof DegreeKeywordMappingOrderByRelevanceFieldEnum)[keyof typeof DegreeKeywordMappingOrderByRelevanceFieldEnum]
 
 
 

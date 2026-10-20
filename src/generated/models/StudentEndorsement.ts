@@ -255,6 +255,7 @@ export type StudentEndorsementOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   student?: Prisma.UserOrderByWithRelationInput
   teacher?: Prisma.UserOrderByWithRelationInput
+  _relevance?: Prisma.StudentEndorsementOrderByRelevanceInput
 }
 
 export type StudentEndorsementWhereUniqueInput = Prisma.AtLeast<{
@@ -386,6 +387,12 @@ export type StudentEndorsementListRelationFilter = {
 
 export type StudentEndorsementOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type StudentEndorsementOrderByRelevanceInput = {
+  fields: Prisma.StudentEndorsementOrderByRelevanceFieldEnum | Prisma.StudentEndorsementOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type StudentEndorsementCountOrderByAggregateInput = {
@@ -548,6 +555,7 @@ export type StudentEndorsementCreateOrConnectWithoutStudentInput = {
 
 export type StudentEndorsementCreateManyStudentInputEnvelope = {
   data: Prisma.StudentEndorsementCreateManyStudentInput | Prisma.StudentEndorsementCreateManyStudentInput[]
+  skipDuplicates?: boolean
 }
 
 export type StudentEndorsementCreateWithoutTeacherInput = {
@@ -577,6 +585,7 @@ export type StudentEndorsementCreateOrConnectWithoutTeacherInput = {
 
 export type StudentEndorsementCreateManyTeacherInputEnvelope = {
   data: Prisma.StudentEndorsementCreateManyTeacherInput | Prisma.StudentEndorsementCreateManyTeacherInput[]
+  skipDuplicates?: boolean
 }
 
 export type StudentEndorsementUpsertWithWhereUniqueWithoutStudentInput = {
@@ -720,31 +729,7 @@ export type StudentEndorsementSelect<ExtArgs extends runtime.Types.Extensions.In
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["studentEndorsement"]>
 
-export type StudentEndorsementSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  studentId?: boolean
-  teacherId?: boolean
-  skill?: boolean
-  endorsement?: boolean
-  rating?: boolean
-  verifiedAcademic?: boolean
-  createdAt?: boolean
-  student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["studentEndorsement"]>
 
-export type StudentEndorsementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  studentId?: boolean
-  teacherId?: boolean
-  skill?: boolean
-  endorsement?: boolean
-  rating?: boolean
-  verifiedAcademic?: boolean
-  createdAt?: boolean
-  student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["studentEndorsement"]>
 
 export type StudentEndorsementSelectScalar = {
   id?: boolean
@@ -759,14 +744,6 @@ export type StudentEndorsementSelectScalar = {
 
 export type StudentEndorsementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "teacherId" | "skill" | "endorsement" | "rating" | "verifiedAcademic" | "createdAt", ExtArgs["result"]["studentEndorsement"]>
 export type StudentEndorsementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type StudentEndorsementIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type StudentEndorsementIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -904,30 +881,6 @@ export interface StudentEndorsementDelegate<ExtArgs extends runtime.Types.Extens
   createMany<T extends StudentEndorsementCreateManyArgs>(args?: Prisma.SelectSubset<T, StudentEndorsementCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many StudentEndorsements and returns the data saved in the database.
-   * @param {StudentEndorsementCreateManyAndReturnArgs} args - Arguments to create many StudentEndorsements.
-   * @example
-   * // Create many StudentEndorsements
-   * const studentEndorsement = await prisma.studentEndorsement.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many StudentEndorsements and only return the `id`
-   * const studentEndorsementWithIdOnly = await prisma.studentEndorsement.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends StudentEndorsementCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, StudentEndorsementCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentEndorsementPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a StudentEndorsement.
    * @param {StudentEndorsementDeleteArgs} args - Arguments to delete one StudentEndorsement.
    * @example
@@ -990,36 +943,6 @@ export interface StudentEndorsementDelegate<ExtArgs extends runtime.Types.Extens
    * 
    */
   updateMany<T extends StudentEndorsementUpdateManyArgs>(args: Prisma.SelectSubset<T, StudentEndorsementUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more StudentEndorsements and returns the data updated in the database.
-   * @param {StudentEndorsementUpdateManyAndReturnArgs} args - Arguments to update many StudentEndorsements.
-   * @example
-   * // Update many StudentEndorsements
-   * const studentEndorsement = await prisma.studentEndorsement.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more StudentEndorsements and only return the `id`
-   * const studentEndorsementWithIdOnly = await prisma.studentEndorsement.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends StudentEndorsementUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, StudentEndorsementUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentEndorsementPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one StudentEndorsement.
@@ -1448,28 +1371,7 @@ export type StudentEndorsementCreateManyArgs<ExtArgs extends runtime.Types.Exten
    * The data used to create many StudentEndorsements.
    */
   data: Prisma.StudentEndorsementCreateManyInput | Prisma.StudentEndorsementCreateManyInput[]
-}
-
-/**
- * StudentEndorsement createManyAndReturn
- */
-export type StudentEndorsementCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the StudentEndorsement
-   */
-  select?: Prisma.StudentEndorsementSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the StudentEndorsement
-   */
-  omit?: Prisma.StudentEndorsementOmit<ExtArgs> | null
-  /**
-   * The data used to create many StudentEndorsements.
-   */
-  data: Prisma.StudentEndorsementCreateManyInput | Prisma.StudentEndorsementCreateManyInput[]
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.StudentEndorsementIncludeCreateManyAndReturn<ExtArgs> | null
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1514,36 +1416,6 @@ export type StudentEndorsementUpdateManyArgs<ExtArgs extends runtime.Types.Exten
    * Limit how many StudentEndorsements to update.
    */
   limit?: number
-}
-
-/**
- * StudentEndorsement updateManyAndReturn
- */
-export type StudentEndorsementUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the StudentEndorsement
-   */
-  select?: Prisma.StudentEndorsementSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the StudentEndorsement
-   */
-  omit?: Prisma.StudentEndorsementOmit<ExtArgs> | null
-  /**
-   * The data used to update StudentEndorsements.
-   */
-  data: Prisma.XOR<Prisma.StudentEndorsementUpdateManyMutationInput, Prisma.StudentEndorsementUncheckedUpdateManyInput>
-  /**
-   * Filter which StudentEndorsements to update
-   */
-  where?: Prisma.StudentEndorsementWhereInput
-  /**
-   * Limit how many StudentEndorsements to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.StudentEndorsementIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

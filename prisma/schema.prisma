@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,7 +16,7 @@ model User {
   password           String?
   role               String        @default("STUDENT") // "STUDENT" | "COMPANY" | "TEACHER" | "ADMIN" (or legacy "RECRUITER")
   verificationStatus String        @default("PENDING") // "PENDING" | "VERIFIED" | "REJECTED"
-  verificationNote   String?
+  verificationNote   String?       @db.Text
   
   // Organization / Affiliations
   collegeName        String?       // For Students & College Teachers
@@ -27,8 +27,8 @@ model User {
   studentId          String?       // For Students (Roll / Registration No)
   phone              String?
   website            String?
-  bio                String?
-  avatarUrl          String?
+  bio                String?       @db.Text
+  avatarUrl          String?       @db.Text
   location           String?
 
   // Relations
@@ -56,15 +56,15 @@ model Profile {
   degree             String   // e.g. "Computer Science", "BBA", "Design", etc.
   college            String?
   studentId          String?  // Roll No
-  skills             String   // Comma-separated or JSON string
-  targetRoles        String   // Comma-separated or JSON string
-  resumeUrl          String?
-  githubUrl          String?
-  linkedinUrl        String?
-  portfolioUrl       String?
+  skills             String   @db.Text // Comma-separated or JSON string
+  targetRoles        String   @db.Text // Comma-separated or JSON string
+  resumeUrl          String?  @db.Text
+  githubUrl          String?  @db.Text
+  linkedinUrl        String?  @db.Text
+  portfolioUrl       String?  @db.Text
   gpa                String?
   graduationYear     String?
-  bio                String?
+  bio                String?  @db.Text
   isAcademicVerified Boolean  @default(false)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
@@ -75,14 +75,14 @@ model CompanyProfile {
   userId         String    @unique
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   companyName    String
-  tagline        String?
+  tagline        String?   @db.Text
   industry       String?   // e.g. "Software & Tech", "FinTech", "Consulting", "HealthTech"
   companySize    String?   // e.g. "1-10", "11-50", "50-200", "500+"
   website        String?
   headquarters   String?
-  about          String?
+  about          String?   @db.Text
   foundedYear    String?
-  logoUrl        String?
+  logoUrl        String?   @db.Text
   verifiedAt     DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -98,7 +98,7 @@ model TeacherProfile {
   facultyId      String?
   officialEmail  String?
   officeLocation String?
-  bio            String?
+  bio            String?   @db.Text
   verifiedAt     DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -111,7 +111,7 @@ model StudentEndorsement {
   teacherId        String
   teacher          User     @relation("TeacherEndorsement", fields: [teacherId], references: [id], onDelete: Cascade)
   skill            String?  // specific skill endorsed or "Academic Excellence"
-  endorsement      String   // Faculty recommendation statement
+  endorsement      String   @db.Text // Faculty recommendation statement
   rating           Int      @default(5) // 1-5 rating
   verifiedAcademic Boolean  @default(true)
   createdAt        DateTime @default(now())
@@ -130,10 +130,10 @@ model PostedJob {
   category       String        @default("General")
   workType       String        @default("Remote") // "Remote" | "Hybrid" | "On-site"
   duration       String?       // e.g. "3 Months", "6 Months"
-  description    String
-  skills         String        // Comma-separated skills
-  requirements   String?
-  applyUrl       String?
+  description    String        @db.Text
+  skills         String        @db.Text // Comma-separated skills
+  requirements   String?       @db.Text
+  applyUrl       String?       @db.Text
   status         String        @default("ACTIVE") // "ACTIVE" | "CLOSED"
   isVerified     Boolean       @default(false)
   applications   Application[]
@@ -151,10 +151,10 @@ model Application {
   company     String
   location    String?
   source      String     // e.g., "Company Direct", "LinkedIn", "Internverse"
-  applyUrl    String?
+  applyUrl    String?    @db.Text
   status      String     @default("Applied") // "Applied", "Reviewing", "Shortlisted", "Interviewing", "Offer", "Rejected"
-  coverLetter String?
-  notes       String?
+  coverLetter String?    @db.Text
+  notes       String?    @db.Text
   appliedAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
 
@@ -171,7 +171,7 @@ model SavedJob {
   location  String?
   salary    String?
   source    String
-  applyUrl  String?
+  applyUrl  String?  @db.Text
   createdAt DateTime @default(now())
 
   @@unique([userId, jobId])
@@ -180,7 +180,7 @@ model SavedJob {
 model DegreeKeywordMapping {
   id        String   @id @default(cuid())
   degree    String   @unique
-  keywords  String
+  keywords  String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -320,6 +320,7 @@ export type PostedJobOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   recruiter?: Prisma.UserOrderByWithRelationInput
   applications?: Prisma.ApplicationOrderByRelationAggregateInput
+  _relevance?: Prisma.PostedJobOrderByRelevanceInput
 }
 
 export type PostedJobWhereUniqueInput = Prisma.AtLeast<{
@@ -566,6 +567,12 @@ export type PostedJobOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type PostedJobOrderByRelevanceInput = {
+  fields: Prisma.PostedJobOrderByRelevanceFieldEnum | Prisma.PostedJobOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
+}
+
 export type PostedJobCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   recruiterId?: Prisma.SortOrder
@@ -746,6 +753,7 @@ export type PostedJobCreateOrConnectWithoutRecruiterInput = {
 
 export type PostedJobCreateManyRecruiterInputEnvelope = {
   data: Prisma.PostedJobCreateManyRecruiterInput | Prisma.PostedJobCreateManyRecruiterInput[]
+  skipDuplicates?: boolean
 }
 
 export type PostedJobUpsertWithWhereUniqueWithoutRecruiterInput = {
@@ -1035,51 +1043,7 @@ export type PostedJobSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   _count?: boolean | Prisma.PostedJobCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["postedJob"]>
 
-export type PostedJobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  recruiterId?: boolean
-  recruiterEmail?: boolean
-  recruiterName?: boolean
-  title?: boolean
-  company?: boolean
-  location?: boolean
-  salary?: boolean
-  category?: boolean
-  workType?: boolean
-  duration?: boolean
-  description?: boolean
-  skills?: boolean
-  requirements?: boolean
-  applyUrl?: boolean
-  status?: boolean
-  isVerified?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  recruiter?: boolean | Prisma.PostedJob$recruiterArgs<ExtArgs>
-}, ExtArgs["result"]["postedJob"]>
 
-export type PostedJobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  recruiterId?: boolean
-  recruiterEmail?: boolean
-  recruiterName?: boolean
-  title?: boolean
-  company?: boolean
-  location?: boolean
-  salary?: boolean
-  category?: boolean
-  workType?: boolean
-  duration?: boolean
-  description?: boolean
-  skills?: boolean
-  requirements?: boolean
-  applyUrl?: boolean
-  status?: boolean
-  isVerified?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  recruiter?: boolean | Prisma.PostedJob$recruiterArgs<ExtArgs>
-}, ExtArgs["result"]["postedJob"]>
 
 export type PostedJobSelectScalar = {
   id?: boolean
@@ -1108,12 +1072,6 @@ export type PostedJobInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   recruiter?: boolean | Prisma.PostedJob$recruiterArgs<ExtArgs>
   applications?: boolean | Prisma.PostedJob$applicationsArgs<ExtArgs>
   _count?: boolean | Prisma.PostedJobCountOutputTypeDefaultArgs<ExtArgs>
-}
-export type PostedJobIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  recruiter?: boolean | Prisma.PostedJob$recruiterArgs<ExtArgs>
-}
-export type PostedJobIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  recruiter?: boolean | Prisma.PostedJob$recruiterArgs<ExtArgs>
 }
 
 export type $PostedJobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1260,30 +1218,6 @@ export interface PostedJobDelegate<ExtArgs extends runtime.Types.Extensions.Inte
   createMany<T extends PostedJobCreateManyArgs>(args?: Prisma.SelectSubset<T, PostedJobCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many PostedJobs and returns the data saved in the database.
-   * @param {PostedJobCreateManyAndReturnArgs} args - Arguments to create many PostedJobs.
-   * @example
-   * // Create many PostedJobs
-   * const postedJob = await prisma.postedJob.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many PostedJobs and only return the `id`
-   * const postedJobWithIdOnly = await prisma.postedJob.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends PostedJobCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, PostedJobCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostedJobPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a PostedJob.
    * @param {PostedJobDeleteArgs} args - Arguments to delete one PostedJob.
    * @example
@@ -1346,36 +1280,6 @@ export interface PostedJobDelegate<ExtArgs extends runtime.Types.Extensions.Inte
    * 
    */
   updateMany<T extends PostedJobUpdateManyArgs>(args: Prisma.SelectSubset<T, PostedJobUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more PostedJobs and returns the data updated in the database.
-   * @param {PostedJobUpdateManyAndReturnArgs} args - Arguments to update many PostedJobs.
-   * @example
-   * // Update many PostedJobs
-   * const postedJob = await prisma.postedJob.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more PostedJobs and only return the `id`
-   * const postedJobWithIdOnly = await prisma.postedJob.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends PostedJobUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, PostedJobUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostedJobPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one PostedJob.
@@ -1815,28 +1719,7 @@ export type PostedJobCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * The data used to create many PostedJobs.
    */
   data: Prisma.PostedJobCreateManyInput | Prisma.PostedJobCreateManyInput[]
-}
-
-/**
- * PostedJob createManyAndReturn
- */
-export type PostedJobCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PostedJob
-   */
-  select?: Prisma.PostedJobSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the PostedJob
-   */
-  omit?: Prisma.PostedJobOmit<ExtArgs> | null
-  /**
-   * The data used to create many PostedJobs.
-   */
-  data: Prisma.PostedJobCreateManyInput | Prisma.PostedJobCreateManyInput[]
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PostedJobIncludeCreateManyAndReturn<ExtArgs> | null
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1881,36 +1764,6 @@ export type PostedJobUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many PostedJobs to update.
    */
   limit?: number
-}
-
-/**
- * PostedJob updateManyAndReturn
- */
-export type PostedJobUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PostedJob
-   */
-  select?: Prisma.PostedJobSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the PostedJob
-   */
-  omit?: Prisma.PostedJobOmit<ExtArgs> | null
-  /**
-   * The data used to update PostedJobs.
-   */
-  data: Prisma.XOR<Prisma.PostedJobUpdateManyMutationInput, Prisma.PostedJobUncheckedUpdateManyInput>
-  /**
-   * Filter which PostedJobs to update
-   */
-  where?: Prisma.PostedJobWhereInput
-  /**
-   * Limit how many PostedJobs to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PostedJobIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

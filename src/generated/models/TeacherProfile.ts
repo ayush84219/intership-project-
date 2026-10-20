@@ -255,6 +255,7 @@ export type TeacherProfileOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  _relevance?: Prisma.TeacherProfileOrderByRelevanceInput
 }
 
 export type TeacherProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -419,6 +420,12 @@ export type TeacherProfileUncheckedUpdateManyInput = {
 export type TeacherProfileNullableScalarRelationFilter = {
   is?: Prisma.TeacherProfileWhereInput | null
   isNot?: Prisma.TeacherProfileWhereInput | null
+}
+
+export type TeacherProfileOrderByRelevanceInput = {
+  fields: Prisma.TeacherProfileOrderByRelevanceFieldEnum | Prisma.TeacherProfileOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type TeacherProfileCountOrderByAggregateInput = {
@@ -588,37 +595,7 @@ export type TeacherProfileSelect<ExtArgs extends runtime.Types.Extensions.Intern
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["teacherProfile"]>
 
-export type TeacherProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  userId?: boolean
-  collegeName?: boolean
-  department?: boolean
-  designation?: boolean
-  facultyId?: boolean
-  officialEmail?: boolean
-  officeLocation?: boolean
-  bio?: boolean
-  verifiedAt?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["teacherProfile"]>
 
-export type TeacherProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  userId?: boolean
-  collegeName?: boolean
-  department?: boolean
-  designation?: boolean
-  facultyId?: boolean
-  officialEmail?: boolean
-  officeLocation?: boolean
-  bio?: boolean
-  verifiedAt?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["teacherProfile"]>
 
 export type TeacherProfileSelectScalar = {
   id?: boolean
@@ -637,12 +614,6 @@ export type TeacherProfileSelectScalar = {
 
 export type TeacherProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "collegeName" | "department" | "designation" | "facultyId" | "officialEmail" | "officeLocation" | "bio" | "verifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["teacherProfile"]>
 export type TeacherProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type TeacherProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type TeacherProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
@@ -782,30 +753,6 @@ export interface TeacherProfileDelegate<ExtArgs extends runtime.Types.Extensions
   createMany<T extends TeacherProfileCreateManyArgs>(args?: Prisma.SelectSubset<T, TeacherProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many TeacherProfiles and returns the data saved in the database.
-   * @param {TeacherProfileCreateManyAndReturnArgs} args - Arguments to create many TeacherProfiles.
-   * @example
-   * // Create many TeacherProfiles
-   * const teacherProfile = await prisma.teacherProfile.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many TeacherProfiles and only return the `id`
-   * const teacherProfileWithIdOnly = await prisma.teacherProfile.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends TeacherProfileCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, TeacherProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeacherProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a TeacherProfile.
    * @param {TeacherProfileDeleteArgs} args - Arguments to delete one TeacherProfile.
    * @example
@@ -868,36 +815,6 @@ export interface TeacherProfileDelegate<ExtArgs extends runtime.Types.Extensions
    * 
    */
   updateMany<T extends TeacherProfileUpdateManyArgs>(args: Prisma.SelectSubset<T, TeacherProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more TeacherProfiles and returns the data updated in the database.
-   * @param {TeacherProfileUpdateManyAndReturnArgs} args - Arguments to update many TeacherProfiles.
-   * @example
-   * // Update many TeacherProfiles
-   * const teacherProfile = await prisma.teacherProfile.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more TeacherProfiles and only return the `id`
-   * const teacherProfileWithIdOnly = await prisma.teacherProfile.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends TeacherProfileUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, TeacherProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeacherProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one TeacherProfile.
@@ -1329,28 +1246,7 @@ export type TeacherProfileCreateManyArgs<ExtArgs extends runtime.Types.Extension
    * The data used to create many TeacherProfiles.
    */
   data: Prisma.TeacherProfileCreateManyInput | Prisma.TeacherProfileCreateManyInput[]
-}
-
-/**
- * TeacherProfile createManyAndReturn
- */
-export type TeacherProfileCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the TeacherProfile
-   */
-  select?: Prisma.TeacherProfileSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the TeacherProfile
-   */
-  omit?: Prisma.TeacherProfileOmit<ExtArgs> | null
-  /**
-   * The data used to create many TeacherProfiles.
-   */
-  data: Prisma.TeacherProfileCreateManyInput | Prisma.TeacherProfileCreateManyInput[]
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.TeacherProfileIncludeCreateManyAndReturn<ExtArgs> | null
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1395,36 +1291,6 @@ export type TeacherProfileUpdateManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many TeacherProfiles to update.
    */
   limit?: number
-}
-
-/**
- * TeacherProfile updateManyAndReturn
- */
-export type TeacherProfileUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the TeacherProfile
-   */
-  select?: Prisma.TeacherProfileSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the TeacherProfile
-   */
-  omit?: Prisma.TeacherProfileOmit<ExtArgs> | null
-  /**
-   * The data used to update TeacherProfiles.
-   */
-  data: Prisma.XOR<Prisma.TeacherProfileUpdateManyMutationInput, Prisma.TeacherProfileUncheckedUpdateManyInput>
-  /**
-   * Filter which TeacherProfiles to update
-   */
-  where?: Prisma.TeacherProfileWhereInput
-  /**
-   * Limit how many TeacherProfiles to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.TeacherProfileIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

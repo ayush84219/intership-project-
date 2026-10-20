@@ -237,6 +237,7 @@ export type SavedJobOrderByWithRelationInput = {
   applyUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  _relevance?: Prisma.SavedJobOrderByRelevanceInput
 }
 
 export type SavedJobWhereUniqueInput = Prisma.AtLeast<{
@@ -389,6 +390,12 @@ export type SavedJobOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type SavedJobOrderByRelevanceInput = {
+  fields: Prisma.SavedJobOrderByRelevanceFieldEnum | Prisma.SavedJobOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
+}
+
 export type SavedJobUserIdJobIdCompoundUniqueInput = {
   userId: string
   jobId: string
@@ -506,6 +513,7 @@ export type SavedJobCreateOrConnectWithoutUserInput = {
 
 export type SavedJobCreateManyUserInputEnvelope = {
   data: Prisma.SavedJobCreateManyUserInput | Prisma.SavedJobCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type SavedJobUpsertWithWhereUniqueWithoutUserInput = {
@@ -604,33 +612,7 @@ export type SavedJobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["savedJob"]>
 
-export type SavedJobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  userId?: boolean
-  jobId?: boolean
-  title?: boolean
-  company?: boolean
-  location?: boolean
-  salary?: boolean
-  source?: boolean
-  applyUrl?: boolean
-  createdAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["savedJob"]>
 
-export type SavedJobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  userId?: boolean
-  jobId?: boolean
-  title?: boolean
-  company?: boolean
-  location?: boolean
-  salary?: boolean
-  source?: boolean
-  applyUrl?: boolean
-  createdAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["savedJob"]>
 
 export type SavedJobSelectScalar = {
   id?: boolean
@@ -647,12 +629,6 @@ export type SavedJobSelectScalar = {
 
 export type SavedJobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "jobId" | "title" | "company" | "location" | "salary" | "source" | "applyUrl" | "createdAt", ExtArgs["result"]["savedJob"]>
 export type SavedJobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type SavedJobIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type SavedJobIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
@@ -790,30 +766,6 @@ export interface SavedJobDelegate<ExtArgs extends runtime.Types.Extensions.Inter
   createMany<T extends SavedJobCreateManyArgs>(args?: Prisma.SelectSubset<T, SavedJobCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many SavedJobs and returns the data saved in the database.
-   * @param {SavedJobCreateManyAndReturnArgs} args - Arguments to create many SavedJobs.
-   * @example
-   * // Create many SavedJobs
-   * const savedJob = await prisma.savedJob.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many SavedJobs and only return the `id`
-   * const savedJobWithIdOnly = await prisma.savedJob.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends SavedJobCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, SavedJobCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SavedJobPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a SavedJob.
    * @param {SavedJobDeleteArgs} args - Arguments to delete one SavedJob.
    * @example
@@ -876,36 +828,6 @@ export interface SavedJobDelegate<ExtArgs extends runtime.Types.Extensions.Inter
    * 
    */
   updateMany<T extends SavedJobUpdateManyArgs>(args: Prisma.SelectSubset<T, SavedJobUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more SavedJobs and returns the data updated in the database.
-   * @param {SavedJobUpdateManyAndReturnArgs} args - Arguments to update many SavedJobs.
-   * @example
-   * // Update many SavedJobs
-   * const savedJob = await prisma.savedJob.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more SavedJobs and only return the `id`
-   * const savedJobWithIdOnly = await prisma.savedJob.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends SavedJobUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, SavedJobUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SavedJobPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one SavedJob.
@@ -1335,28 +1257,7 @@ export type SavedJobCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many SavedJobs.
    */
   data: Prisma.SavedJobCreateManyInput | Prisma.SavedJobCreateManyInput[]
-}
-
-/**
- * SavedJob createManyAndReturn
- */
-export type SavedJobCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the SavedJob
-   */
-  select?: Prisma.SavedJobSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the SavedJob
-   */
-  omit?: Prisma.SavedJobOmit<ExtArgs> | null
-  /**
-   * The data used to create many SavedJobs.
-   */
-  data: Prisma.SavedJobCreateManyInput | Prisma.SavedJobCreateManyInput[]
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SavedJobIncludeCreateManyAndReturn<ExtArgs> | null
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1401,36 +1302,6 @@ export type SavedJobUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many SavedJobs to update.
    */
   limit?: number
-}
-
-/**
- * SavedJob updateManyAndReturn
- */
-export type SavedJobUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the SavedJob
-   */
-  select?: Prisma.SavedJobSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the SavedJob
-   */
-  omit?: Prisma.SavedJobOmit<ExtArgs> | null
-  /**
-   * The data used to update SavedJobs.
-   */
-  data: Prisma.XOR<Prisma.SavedJobUpdateManyMutationInput, Prisma.SavedJobUncheckedUpdateManyInput>
-  /**
-   * Filter which SavedJobs to update
-   */
-  where?: Prisma.SavedJobWhereInput
-  /**
-   * Limit how many SavedJobs to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SavedJobIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

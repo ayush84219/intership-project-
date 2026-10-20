@@ -190,6 +190,7 @@ export type DegreeKeywordMappingOrderByWithRelationInput = {
   keywords?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  _relevance?: Prisma.DegreeKeywordMappingOrderByRelevanceInput
 }
 
 export type DegreeKeywordMappingWhereUniqueInput = Prisma.AtLeast<{
@@ -281,6 +282,12 @@ export type DegreeKeywordMappingUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type DegreeKeywordMappingOrderByRelevanceInput = {
+  fields: Prisma.DegreeKeywordMappingOrderByRelevanceFieldEnum | Prisma.DegreeKeywordMappingOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
+}
+
 export type DegreeKeywordMappingCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   degree?: Prisma.SortOrder
@@ -315,21 +322,7 @@ export type DegreeKeywordMappingSelect<ExtArgs extends runtime.Types.Extensions.
   updatedAt?: boolean
 }, ExtArgs["result"]["degreeKeywordMapping"]>
 
-export type DegreeKeywordMappingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  degree?: boolean
-  keywords?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["degreeKeywordMapping"]>
 
-export type DegreeKeywordMappingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  degree?: boolean
-  keywords?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["degreeKeywordMapping"]>
 
 export type DegreeKeywordMappingSelectScalar = {
   id?: boolean
@@ -468,30 +461,6 @@ export interface DegreeKeywordMappingDelegate<ExtArgs extends runtime.Types.Exte
   createMany<T extends DegreeKeywordMappingCreateManyArgs>(args?: Prisma.SelectSubset<T, DegreeKeywordMappingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many DegreeKeywordMappings and returns the data saved in the database.
-   * @param {DegreeKeywordMappingCreateManyAndReturnArgs} args - Arguments to create many DegreeKeywordMappings.
-   * @example
-   * // Create many DegreeKeywordMappings
-   * const degreeKeywordMapping = await prisma.degreeKeywordMapping.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many DegreeKeywordMappings and only return the `id`
-   * const degreeKeywordMappingWithIdOnly = await prisma.degreeKeywordMapping.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends DegreeKeywordMappingCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, DegreeKeywordMappingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DegreeKeywordMappingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a DegreeKeywordMapping.
    * @param {DegreeKeywordMappingDeleteArgs} args - Arguments to delete one DegreeKeywordMapping.
    * @example
@@ -554,36 +523,6 @@ export interface DegreeKeywordMappingDelegate<ExtArgs extends runtime.Types.Exte
    * 
    */
   updateMany<T extends DegreeKeywordMappingUpdateManyArgs>(args: Prisma.SelectSubset<T, DegreeKeywordMappingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more DegreeKeywordMappings and returns the data updated in the database.
-   * @param {DegreeKeywordMappingUpdateManyAndReturnArgs} args - Arguments to update many DegreeKeywordMappings.
-   * @example
-   * // Update many DegreeKeywordMappings
-   * const degreeKeywordMapping = await prisma.degreeKeywordMapping.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more DegreeKeywordMappings and only return the `id`
-   * const degreeKeywordMappingWithIdOnly = await prisma.degreeKeywordMapping.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends DegreeKeywordMappingUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, DegreeKeywordMappingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DegreeKeywordMappingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one DegreeKeywordMapping.
@@ -983,24 +922,7 @@ export type DegreeKeywordMappingCreateManyArgs<ExtArgs extends runtime.Types.Ext
    * The data used to create many DegreeKeywordMappings.
    */
   data: Prisma.DegreeKeywordMappingCreateManyInput | Prisma.DegreeKeywordMappingCreateManyInput[]
-}
-
-/**
- * DegreeKeywordMapping createManyAndReturn
- */
-export type DegreeKeywordMappingCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the DegreeKeywordMapping
-   */
-  select?: Prisma.DegreeKeywordMappingSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the DegreeKeywordMapping
-   */
-  omit?: Prisma.DegreeKeywordMappingOmit<ExtArgs> | null
-  /**
-   * The data used to create many DegreeKeywordMappings.
-   */
-  data: Prisma.DegreeKeywordMappingCreateManyInput | Prisma.DegreeKeywordMappingCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1029,32 +951,6 @@ export type DegreeKeywordMappingUpdateArgs<ExtArgs extends runtime.Types.Extensi
  * DegreeKeywordMapping updateMany
  */
 export type DegreeKeywordMappingUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The data used to update DegreeKeywordMappings.
-   */
-  data: Prisma.XOR<Prisma.DegreeKeywordMappingUpdateManyMutationInput, Prisma.DegreeKeywordMappingUncheckedUpdateManyInput>
-  /**
-   * Filter which DegreeKeywordMappings to update
-   */
-  where?: Prisma.DegreeKeywordMappingWhereInput
-  /**
-   * Limit how many DegreeKeywordMappings to update.
-   */
-  limit?: number
-}
-
-/**
- * DegreeKeywordMapping updateManyAndReturn
- */
-export type DegreeKeywordMappingUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the DegreeKeywordMapping
-   */
-  select?: Prisma.DegreeKeywordMappingSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the DegreeKeywordMapping
-   */
-  omit?: Prisma.DegreeKeywordMappingOmit<ExtArgs> | null
   /**
    * The data used to update DegreeKeywordMappings.
    */

@@ -300,6 +300,7 @@ export type ProfileOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  _relevance?: Prisma.ProfileOrderByRelevanceInput
 }
 
 export type ProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -516,6 +517,12 @@ export type ProfileNullableScalarRelationFilter = {
   isNot?: Prisma.ProfileWhereInput | null
 }
 
+export type ProfileOrderByRelevanceInput = {
+  fields: Prisma.ProfileOrderByRelevanceFieldEnum | Prisma.ProfileOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
+}
+
 export type ProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -727,47 +734,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
-export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  userId?: boolean
-  degree?: boolean
-  college?: boolean
-  studentId?: boolean
-  skills?: boolean
-  targetRoles?: boolean
-  resumeUrl?: boolean
-  githubUrl?: boolean
-  linkedinUrl?: boolean
-  portfolioUrl?: boolean
-  gpa?: boolean
-  graduationYear?: boolean
-  bio?: boolean
-  isAcademicVerified?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["profile"]>
 
-export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  userId?: boolean
-  degree?: boolean
-  college?: boolean
-  studentId?: boolean
-  skills?: boolean
-  targetRoles?: boolean
-  resumeUrl?: boolean
-  githubUrl?: boolean
-  linkedinUrl?: boolean
-  portfolioUrl?: boolean
-  gpa?: boolean
-  graduationYear?: boolean
-  bio?: boolean
-  isAcademicVerified?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["profile"]>
 
 export type ProfileSelectScalar = {
   id?: boolean
@@ -791,12 +758,6 @@ export type ProfileSelectScalar = {
 
 export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "degree" | "college" | "studentId" | "skills" | "targetRoles" | "resumeUrl" | "githubUrl" | "linkedinUrl" | "portfolioUrl" | "gpa" | "graduationYear" | "bio" | "isAcademicVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type ProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type ProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
@@ -941,30 +902,6 @@ export interface ProfileDelegate<ExtArgs extends runtime.Types.Extensions.Intern
   createMany<T extends ProfileCreateManyArgs>(args?: Prisma.SelectSubset<T, ProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many Profiles and returns the data saved in the database.
-   * @param {ProfileCreateManyAndReturnArgs} args - Arguments to create many Profiles.
-   * @example
-   * // Create many Profiles
-   * const profile = await prisma.profile.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many Profiles and only return the `id`
-   * const profileWithIdOnly = await prisma.profile.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends ProfileCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, ProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a Profile.
    * @param {ProfileDeleteArgs} args - Arguments to delete one Profile.
    * @example
@@ -1027,36 +964,6 @@ export interface ProfileDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    * 
    */
   updateMany<T extends ProfileUpdateManyArgs>(args: Prisma.SelectSubset<T, ProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more Profiles and returns the data updated in the database.
-   * @param {ProfileUpdateManyAndReturnArgs} args - Arguments to update many Profiles.
-   * @example
-   * // Update many Profiles
-   * const profile = await prisma.profile.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more Profiles and only return the `id`
-   * const profileWithIdOnly = await prisma.profile.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends ProfileUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, ProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one Profile.
@@ -1493,28 +1400,7 @@ export type ProfileCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many Profiles.
    */
   data: Prisma.ProfileCreateManyInput | Prisma.ProfileCreateManyInput[]
-}
-
-/**
- * Profile createManyAndReturn
- */
-export type ProfileCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Profile
-   */
-  select?: Prisma.ProfileSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Profile
-   */
-  omit?: Prisma.ProfileOmit<ExtArgs> | null
-  /**
-   * The data used to create many Profiles.
-   */
-  data: Prisma.ProfileCreateManyInput | Prisma.ProfileCreateManyInput[]
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProfileIncludeCreateManyAndReturn<ExtArgs> | null
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1559,36 +1445,6 @@ export type ProfileUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Profiles to update.
    */
   limit?: number
-}
-
-/**
- * Profile updateManyAndReturn
- */
-export type ProfileUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Profile
-   */
-  select?: Prisma.ProfileSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Profile
-   */
-  omit?: Prisma.ProfileOmit<ExtArgs> | null
-  /**
-   * The data used to update Profiles.
-   */
-  data: Prisma.XOR<Prisma.ProfileUpdateManyMutationInput, Prisma.ProfileUncheckedUpdateManyInput>
-  /**
-   * Filter which Profiles to update
-   */
-  where?: Prisma.ProfileWhereInput
-  /**
-   * Limit how many Profiles to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProfileIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

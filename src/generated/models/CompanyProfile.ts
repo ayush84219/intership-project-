@@ -273,6 +273,7 @@ export type CompanyProfileOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  _relevance?: Prisma.CompanyProfileOrderByRelevanceInput
 }
 
 export type CompanyProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -457,6 +458,12 @@ export type CompanyProfileUncheckedUpdateManyInput = {
 export type CompanyProfileNullableScalarRelationFilter = {
   is?: Prisma.CompanyProfileWhereInput | null
   isNot?: Prisma.CompanyProfileWhereInput | null
+}
+
+export type CompanyProfileOrderByRelevanceInput = {
+  fields: Prisma.CompanyProfileOrderByRelevanceFieldEnum | Prisma.CompanyProfileOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type CompanyProfileCountOrderByAggregateInput = {
@@ -646,41 +653,7 @@ export type CompanyProfileSelect<ExtArgs extends runtime.Types.Extensions.Intern
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["companyProfile"]>
 
-export type CompanyProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  userId?: boolean
-  companyName?: boolean
-  tagline?: boolean
-  industry?: boolean
-  companySize?: boolean
-  website?: boolean
-  headquarters?: boolean
-  about?: boolean
-  foundedYear?: boolean
-  logoUrl?: boolean
-  verifiedAt?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["companyProfile"]>
 
-export type CompanyProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  userId?: boolean
-  companyName?: boolean
-  tagline?: boolean
-  industry?: boolean
-  companySize?: boolean
-  website?: boolean
-  headquarters?: boolean
-  about?: boolean
-  foundedYear?: boolean
-  logoUrl?: boolean
-  verifiedAt?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["companyProfile"]>
 
 export type CompanyProfileSelectScalar = {
   id?: boolean
@@ -701,12 +674,6 @@ export type CompanyProfileSelectScalar = {
 
 export type CompanyProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "companyName" | "tagline" | "industry" | "companySize" | "website" | "headquarters" | "about" | "foundedYear" | "logoUrl" | "verifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["companyProfile"]>
 export type CompanyProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type CompanyProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-}
-export type CompanyProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
@@ -848,30 +815,6 @@ export interface CompanyProfileDelegate<ExtArgs extends runtime.Types.Extensions
   createMany<T extends CompanyProfileCreateManyArgs>(args?: Prisma.SelectSubset<T, CompanyProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many CompanyProfiles and returns the data saved in the database.
-   * @param {CompanyProfileCreateManyAndReturnArgs} args - Arguments to create many CompanyProfiles.
-   * @example
-   * // Create many CompanyProfiles
-   * const companyProfile = await prisma.companyProfile.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many CompanyProfiles and only return the `id`
-   * const companyProfileWithIdOnly = await prisma.companyProfile.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends CompanyProfileCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, CompanyProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a CompanyProfile.
    * @param {CompanyProfileDeleteArgs} args - Arguments to delete one CompanyProfile.
    * @example
@@ -934,36 +877,6 @@ export interface CompanyProfileDelegate<ExtArgs extends runtime.Types.Extensions
    * 
    */
   updateMany<T extends CompanyProfileUpdateManyArgs>(args: Prisma.SelectSubset<T, CompanyProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Update zero or more CompanyProfiles and returns the data updated in the database.
-   * @param {CompanyProfileUpdateManyAndReturnArgs} args - Arguments to update many CompanyProfiles.
-   * @example
-   * // Update many CompanyProfiles
-   * const companyProfile = await prisma.companyProfile.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more CompanyProfiles and only return the `id`
-   * const companyProfileWithIdOnly = await prisma.companyProfile.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends CompanyProfileUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, CompanyProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one CompanyProfile.
@@ -1397,28 +1310,7 @@ export type CompanyProfileCreateManyArgs<ExtArgs extends runtime.Types.Extension
    * The data used to create many CompanyProfiles.
    */
   data: Prisma.CompanyProfileCreateManyInput | Prisma.CompanyProfileCreateManyInput[]
-}
-
-/**
- * CompanyProfile createManyAndReturn
- */
-export type CompanyProfileCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the CompanyProfile
-   */
-  select?: Prisma.CompanyProfileSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the CompanyProfile
-   */
-  omit?: Prisma.CompanyProfileOmit<ExtArgs> | null
-  /**
-   * The data used to create many CompanyProfiles.
-   */
-  data: Prisma.CompanyProfileCreateManyInput | Prisma.CompanyProfileCreateManyInput[]
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.CompanyProfileIncludeCreateManyAndReturn<ExtArgs> | null
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1463,36 +1355,6 @@ export type CompanyProfileUpdateManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many CompanyProfiles to update.
    */
   limit?: number
-}
-
-/**
- * CompanyProfile updateManyAndReturn
- */
-export type CompanyProfileUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the CompanyProfile
-   */
-  select?: Prisma.CompanyProfileSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the CompanyProfile
-   */
-  omit?: Prisma.CompanyProfileOmit<ExtArgs> | null
-  /**
-   * The data used to update CompanyProfiles.
-   */
-  data: Prisma.XOR<Prisma.CompanyProfileUpdateManyMutationInput, Prisma.CompanyProfileUncheckedUpdateManyInput>
-  /**
-   * Filter which CompanyProfiles to update
-   */
-  where?: Prisma.CompanyProfileWhereInput
-  /**
-   * Limit how many CompanyProfiles to update.
-   */
-  limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.CompanyProfileIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

@@ -67,6 +67,9 @@ export type ModelName = (typeof ModelName)[keyof typeof ModelName]
  */
 
 export const TransactionIsolationLevel = runtime.makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 } as const)
 
@@ -259,4 +262,154 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const UserOrderByRelevanceFieldEnum = {
+  id: 'id',
+  email: 'email',
+  name: 'name',
+  password: 'password',
+  role: 'role',
+  verificationStatus: 'verificationStatus',
+  verificationNote: 'verificationNote',
+  collegeName: 'collegeName',
+  companyName: 'companyName',
+  department: 'department',
+  designation: 'designation',
+  employeeId: 'employeeId',
+  studentId: 'studentId',
+  phone: 'phone',
+  website: 'website',
+  bio: 'bio',
+  avatarUrl: 'avatarUrl',
+  location: 'location'
+} as const
+
+export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
+export const ProfileOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  degree: 'degree',
+  college: 'college',
+  studentId: 'studentId',
+  skills: 'skills',
+  targetRoles: 'targetRoles',
+  resumeUrl: 'resumeUrl',
+  githubUrl: 'githubUrl',
+  linkedinUrl: 'linkedinUrl',
+  portfolioUrl: 'portfolioUrl',
+  gpa: 'gpa',
+  graduationYear: 'graduationYear',
+  bio: 'bio'
+} as const
+
+export type ProfileOrderByRelevanceFieldEnum = (typeof ProfileOrderByRelevanceFieldEnum)[keyof typeof ProfileOrderByRelevanceFieldEnum]
+
+
+export const CompanyProfileOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companyName: 'companyName',
+  tagline: 'tagline',
+  industry: 'industry',
+  companySize: 'companySize',
+  website: 'website',
+  headquarters: 'headquarters',
+  about: 'about',
+  foundedYear: 'foundedYear',
+  logoUrl: 'logoUrl'
+} as const
+
+export type CompanyProfileOrderByRelevanceFieldEnum = (typeof CompanyProfileOrderByRelevanceFieldEnum)[keyof typeof CompanyProfileOrderByRelevanceFieldEnum]
+
+
+export const TeacherProfileOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  collegeName: 'collegeName',
+  department: 'department',
+  designation: 'designation',
+  facultyId: 'facultyId',
+  officialEmail: 'officialEmail',
+  officeLocation: 'officeLocation',
+  bio: 'bio'
+} as const
+
+export type TeacherProfileOrderByRelevanceFieldEnum = (typeof TeacherProfileOrderByRelevanceFieldEnum)[keyof typeof TeacherProfileOrderByRelevanceFieldEnum]
+
+
+export const StudentEndorsementOrderByRelevanceFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  teacherId: 'teacherId',
+  skill: 'skill',
+  endorsement: 'endorsement'
+} as const
+
+export type StudentEndorsementOrderByRelevanceFieldEnum = (typeof StudentEndorsementOrderByRelevanceFieldEnum)[keyof typeof StudentEndorsementOrderByRelevanceFieldEnum]
+
+
+export const PostedJobOrderByRelevanceFieldEnum = {
+  id: 'id',
+  recruiterId: 'recruiterId',
+  recruiterEmail: 'recruiterEmail',
+  recruiterName: 'recruiterName',
+  title: 'title',
+  company: 'company',
+  location: 'location',
+  salary: 'salary',
+  category: 'category',
+  workType: 'workType',
+  duration: 'duration',
+  description: 'description',
+  skills: 'skills',
+  requirements: 'requirements',
+  applyUrl: 'applyUrl',
+  status: 'status'
+} as const
+
+export type PostedJobOrderByRelevanceFieldEnum = (typeof PostedJobOrderByRelevanceFieldEnum)[keyof typeof PostedJobOrderByRelevanceFieldEnum]
+
+
+export const ApplicationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  jobId: 'jobId',
+  title: 'title',
+  company: 'company',
+  location: 'location',
+  source: 'source',
+  applyUrl: 'applyUrl',
+  status: 'status',
+  coverLetter: 'coverLetter',
+  notes: 'notes'
+} as const
+
+export type ApplicationOrderByRelevanceFieldEnum = (typeof ApplicationOrderByRelevanceFieldEnum)[keyof typeof ApplicationOrderByRelevanceFieldEnum]
+
+
+export const SavedJobOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  jobId: 'jobId',
+  title: 'title',
+  company: 'company',
+  location: 'location',
+  salary: 'salary',
+  source: 'source',
+  applyUrl: 'applyUrl'
+} as const
+
+export type SavedJobOrderByRelevanceFieldEnum = (typeof SavedJobOrderByRelevanceFieldEnum)[keyof typeof SavedJobOrderByRelevanceFieldEnum]
+
+
+export const DegreeKeywordMappingOrderByRelevanceFieldEnum = {
+  id: 'id',
+  degree: 'degree',
+  keywords: 'keywords'
+} as const
+
+export type DegreeKeywordMappingOrderByRelevanceFieldEnum = (typeof DegreeKeywordMappingOrderByRelevanceFieldEnum)[keyof typeof DegreeKeywordMappingOrderByRelevanceFieldEnum]
 
