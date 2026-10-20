@@ -6,8 +6,30 @@ const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
 };
 
+function initDatabaseUrl(): string | undefined {
+  let url = process.env.DATABASE_URL;
+
+  // If DATABASE_URL is missing or holding an old sqlite "file:" URL
+  if (!url || !url.startsWith("mysql://")) {
+    if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD) {
+      const user = encodeURIComponent(process.env.DB_USER);
+      const pass = encodeURIComponent(process.env.DB_PASSWORD);
+      const host = process.env.DB_HOST;
+      const port = process.env.DB_PORT || "20457";
+      const db = process.env.DB_NAME || "intership_portel";
+      url = `mysql://${user}:${pass}@${host}:${port}/${db}?ssl-mode=REQUIRED`;
+      process.env.DATABASE_URL = url;
+    }
+  }
+
+  return url;
+}
+
 function createPrismaClient() {
-  return new PrismaClient();
+  const url = initDatabaseUrl();
+  return new PrismaClient(
+    url ? { datasourceUrl: url } : undefined
+  );
 }
 
 export const prisma: PrismaClient =

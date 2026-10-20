@@ -17,9 +17,21 @@ if (fs.existsSync(envPath)) {
   }
 }
 
+// Build MySQL DATABASE_URL if missing or holding old sqlite file: url
+if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith('mysql://')) {
+  if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD) {
+    const user = encodeURIComponent(process.env.DB_USER)
+    const pass = encodeURIComponent(process.env.DB_PASSWORD)
+    const host = process.env.DB_HOST
+    const port = process.env.DB_PORT || '20457'
+    const db = process.env.DB_NAME || 'intership_portel'
+    process.env.DATABASE_URL = `mysql://${user}:${pass}@${host}:${port}/${db}?ssl-mode=REQUIRED`
+  }
+}
+
 export default defineConfig({
   schema: 'prisma/schema.prisma',
   datasource: {
-    url: process.env.DATABASE_URL ?? 'file:./prisma/dev.db',
+    url: process.env.DATABASE_URL ?? '',
   },
 })
