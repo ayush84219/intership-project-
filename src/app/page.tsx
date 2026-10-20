@@ -15,7 +15,10 @@ import {
   Plus,
   Check,
   BookOpen,
-  MapPin
+  MapPin,
+  Video,
+  Award,
+  Clock
 } from "lucide-react";
 
 import Sidebar from "../components/Sidebar";
@@ -25,103 +28,15 @@ import AIChatbot from "../components/AIChatbot";
 import JobCardSkeleton from "../components/JobCardSkeleton";
 import PostJobModal from "../components/PostJobModal";
 import RecruiterDashboard from "../components/RecruiterDashboard";
+import AdminDashboard from "../components/AdminDashboard";
+import TeacherDashboard from "../components/TeacherDashboard";
+import RoleSwitcherBar from "../components/RoleSwitcherBar";
+import StudentProfile from "../components/StudentProfile";
+import StudentApplications from "../components/StudentApplications";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
-interface Profile {
-  id: string;
-  degree: string;
-  skills: string;
-  targetRoles: string;
-  resumeUrl?: string | null;
-}
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  role?: string;
-  profile: Profile | null;
-}
-
-interface Job {
-  id: string;
-  title: string;
-  company: string;
-  location?: string | null;
-  logo?: string;
-  source: string;
-  applyUrl?: string | null;
-  description: string;
-  skills: string[];
-  salary?: string | null;
-  category?: string;
-}
-
-interface Application {
-  id: string;
-  jobId: string;
-  title: string;
-  company: string;
-  location?: string | null;
-  source: string;
-  applyUrl?: string | null;
-  status: string;
-  coverLetter?: string | null;
-  appliedAt: string;
-}
-
-const COURSE_PRESETS: Record<string, {
-  name: string;
-  description: string;
-  fields: string[];
-  skills: string[];
-}> = {
-  "B.Tech": {
-    name: "Bachelor of Technology (B.Tech)",
-    description: "Technology, Engineering, Software & Computing tracks",
-    fields: ["AI/ML", "Data Science", "Machine Learning", "Prompt Engineer", "Software Developer"],
-    skills: ["React", "TypeScript", "Python", "TensorFlow", "PyTorch", "SQL", "Prompt Engineering"]
-  },
-  "MBA": {
-    name: "Master of Business Administration (MBA)",
-    description: "General Management, Strategy, Consulting & Executive tracks",
-    fields: ["Manager", "Marketing Specialist", "Accountant", "SAP Specialist", "HR Manager"],
-    skills: ["Leadership", "Marketing Strategy", "Financial Analysis", "SAP ERP", "Excel", "Project Management"]
-  },
-  "BBA": {
-    name: "Bachelor of Business Administration (BBA)",
-    description: "Business administration, corporate management & sales operations",
-    fields: ["HR Intern", "Business Development", "Sales Executive", "Marketing Executive"],
-    skills: ["Communication", "Excel", "PowerPoint", "Brand Strategy", "Recruitment"]
-  },
-  "B.Com": {
-    name: "Bachelor of Commerce (B.Com)",
-    description: "Accounting, finance, taxation & business auditing",
-    fields: ["Accountant", "Financial Analyst", "Tax Consultant", "Audit Intern"],
-    skills: ["Accounting", "Excel", "Tally", "Corporate Finance", "GST"]
-  },
-  "BA": {
-    name: "Bachelor of Arts (BA)",
-    description: "Social sciences, humanities, writing & creative media tracks",
-    fields: ["Content Writer", "Social Media Specialist", "Graphic Designer", "HR Executive"],
-    skills: ["Creative Writing", "Communication", "Social Media Marketing", "SEO", "Photoshop"]
-  },
-  "MA": {
-    name: "Master of Arts (MA)",
-    description: "Advanced humanities research, linguistics, writing & teaching",
-    fields: ["Content Lead", "Public Relations Lead", "Research Associate", "Translator"],
-    skills: ["Academic Writing", "Research", "Communication", "Copywriting", "Public Speaking"]
-  }
-};
-
-const LOCATION_DATA: Record<string, string[]> = {
-  "Punjab": ["Ludhiana", "Mohali", "Amritsar", "Jalandhar", "Patiala"],
-  "Delhi NCR": ["New Delhi", "Noida", "Gurugram", "Ghaziabad"],
-  "Karnataka": ["Bengaluru", "Mysore", "Mangalore"],
-  "Maharashtra": ["Mumbai", "Pune", "Nagpur"],
-  "Tamil Nadu": ["Chennai", "Coimbatore"]
-};
+import { User, Profile, Job, Application } from "@/types";
+import { COURSE_PRESETS, LOCATION_DATA } from "@/lib/constants";
 
 export default function Home() {
   const router = useRouter();
@@ -216,8 +131,14 @@ export default function Home() {
       if (data.success && data.user) {
         setUser(data.user);
         setOnboardingName(data.user.name || "");
-        if (data.user.role === "RECRUITER") {
+        if (data.user.role === "ADMIN") {
+          setActiveTab("admin_verify");
+        } else if (data.user.role === "TEACHER") {
+          setActiveTab("students");
+        } else if (data.user.role === "COMPANY" || data.user.role === "RECRUITER") {
           setActiveTab("posted_jobs");
+        } else {
+          setActiveTab("feed");
         }
         // Pre-fetch jobs based on user profile degree if they have one, or default degree if not
         const targetDegree = data.user.profile?.degree || "Bachelor of Technology (B.Tech)";
@@ -479,26 +400,40 @@ export default function Home() {
     setSavingProfile(true);
     try {
       const nameInput = (document.getElementById("profileName") as HTMLInputElement)?.value;
+      const collegeInput = (document.getElementById("profileCollege") as HTMLInputElement)?.value;
+      const studentIdInput = (document.getElementById("profileStudentId") as HTMLInputElement)?.value;
       const degreeInput = (document.getElementById("profileDegree") as HTMLInputElement)?.value;
+      const gpaInput = (document.getElementById("profileGpa") as HTMLInputElement)?.value;
       const skillsInput = (document.getElementById("profileSkills") as HTMLTextAreaElement)?.value;
       const targetRolesInput = (document.getElementById("profileRoles") as HTMLInputElement)?.value;
+      const resumeUrlInput = (document.getElementById("profileResume") as HTMLInputElement)?.value;
+      const githubInput = (document.getElementById("profileGithub") as HTMLInputElement)?.value;
+      const linkedinInput = (document.getElementById("profileLinkedin") as HTMLInputElement)?.value;
 
       const res = await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: nameInput,
+          collegeName: collegeInput,
+          studentId: studentIdInput,
           degree: degreeInput,
+          gpa: gpaInput,
           skills: skillsInput,
           targetRoles: targetRolesInput,
+          resumeUrl: resumeUrlInput,
+          githubUrl: githubInput,
+          linkedinUrl: linkedinInput,
         }),
       });
 
       const data = await res.json();
       if (data.success && data.user) {
         setUser(data.user);
-        alert("Profile updated successfully!");
-        fetchJobs(data.user.profile.degree);
+        alert("Student profile updated successfully!");
+        if (data.user.profile?.degree) {
+          fetchJobs(data.user.profile.degree);
+        }
       }
     } catch (err) {
       console.error("Profile save failed:", err);
@@ -605,8 +540,14 @@ export default function Home() {
     }
   };
 
-  // Check if profile exists and has a degree configured or onboarding skipped
-  const isOnboarded = skippedOnboarding || !!user?.profile?.degree;
+  // Check if profile exists and has a degree configured or onboarding skipped (Admins, Teachers, Companies skip directly)
+  const isOnboarded =
+    skippedOnboarding ||
+    !!user?.profile?.degree ||
+    user?.role === "ADMIN" ||
+    user?.role === "TEACHER" ||
+    user?.role === "COMPANY" ||
+    user?.role === "RECRUITER";
 
   // Compile selected job objects
   const selectedJobsList = jobs.filter(job => selectedJobIds[job.id]);
@@ -1092,13 +1033,29 @@ export default function Home() {
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-zinc-50/50 dark:bg-zinc-950/20 relative">
-        {/* Glow decoration */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/5 dark:bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
+        <RoleSwitcherBar currentRole={user?.role} />
+        {/* ADMIN GOVERNANCE & VERIFICATION DASHBOARD */}
+        {(activeTab === "admin_verify" || activeTab === "admin_users" || activeTab === "admin_analytics") && (
+          <div className="p-8 max-w-6xl w-full mx-auto">
+            <AdminDashboard />
+          </div>
+        )}
 
-        {/* RECRUITER DASHBOARD TAB */}
-        {(activeTab === "posted_jobs" || activeTab === "applicants") && (
+        {/* COLLEGE TEACHER DASHBOARD */}
+        {(activeTab === "students" || activeTab === "placements" || activeTab === "teacher_profile") && (
+          <div className="p-8 max-w-6xl w-full mx-auto">
+            <TeacherDashboard user={user as any} onProfileUpdated={fetchProfile} />
+          </div>
+        )}
+
+        {/* COMPANY / RECRUITER DASHBOARD */}
+        {(activeTab === "posted_jobs" || activeTab === "applicants" || activeTab === "company_profile") && (
           <div className="p-8 max-w-5xl w-full mx-auto">
-            <RecruiterDashboard onOpenPostJobModal={() => setIsPostJobModalOpen(true)} />
+            <RecruiterDashboard
+              user={user as any}
+              onOpenPostJobModal={() => setIsPostJobModalOpen(true)}
+              onProfileUpdated={fetchProfile}
+            />
           </div>
         )}
 
@@ -1392,222 +1349,18 @@ export default function Home() {
         )}
 
         {/* Tab 2: PROFILE PAGE */}
-        {activeTab === "profile" && user && user.profile && (
-          <div className="p-8 space-y-6 max-w-3xl w-full mx-auto">
-            <div className="border-b border-zinc-250 dark:border-zinc-900 pb-6">
-              <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
-                My Student Profile
-              </h2>
-              <p className="text-xs text-zinc-550 dark:text-zinc-400 font-semibold mt-1">
-                Customize your academic details, skills, and target roles to optimize job matching.
-              </p>
-            </div>
-
-            <form onSubmit={handleProfileSave} className="space-y-6 bg-white dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 p-8 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
-              {/* Full Name */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label htmlFor="profileName" className="text-xs font-bold text-zinc-550 dark:text-zinc-400 uppercase tracking-wider">
-                    Full Name
-                  </label>
-                  <input
-                    id="profileName"
-                    type="text"
-                    required
-                    defaultValue={user.name}
-                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-cyan-500 text-zinc-800 dark:text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-sm font-semibold"
-                  />
-                </div>
-
-                {/* Email Address (Read-only) */}
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-zinc-450 dark:text-zinc-500 uppercase tracking-wider">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    disabled
-                    value={user.email}
-                    className="w-full bg-zinc-100/60 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900 text-zinc-450 dark:text-zinc-500 px-4 py-3 rounded-xl text-sm font-semibold cursor-not-allowed"
-                  />
-                </div>
-              </div>
-
-              {/* Degree Track */}
-              <div className="space-y-2">
-                <label htmlFor="profileDegree" className="text-xs font-bold text-zinc-550 dark:text-zinc-400 uppercase tracking-wider">
-                  Degree / Track Spec
-                </label>
-                <input
-                  id="profileDegree"
-                  type="text"
-                  required
-                  defaultValue={user.profile.degree}
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-cyan-500 text-zinc-800 dark:text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-sm font-semibold"
-                />
-              </div>
-
-              {/* Target Roles */}
-              <div className="space-y-2">
-                <label htmlFor="profileRoles" className="text-xs font-bold text-zinc-550 dark:text-zinc-400 uppercase tracking-wider">
-                  Target Internship Roles (Comma separated)
-                </label>
-                <input
-                  id="profileRoles"
-                  type="text"
-                  required
-                  defaultValue={user.profile.targetRoles}
-                  placeholder="e.g. AI/ML Intern, Data Analyst Intern"
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-cyan-500 text-zinc-800 dark:text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-sm font-semibold"
-                />
-              </div>
-
-              {/* Skills Area */}
-              <div className="space-y-2">
-                <label htmlFor="profileSkills" className="text-xs font-bold text-zinc-550 dark:text-zinc-400 uppercase tracking-wider">
-                  Skills Inventory (Comma separated)
-                </label>
-                <textarea
-                  id="profileSkills"
-                  rows={4}
-                  required
-                  defaultValue={user.profile.skills}
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-cyan-500 text-zinc-800 dark:text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-sm font-medium leading-relaxed font-mono"
-                />
-                <p className="text-[10px] text-zinc-450 dark:text-zinc-500 font-semibold">Used directly for computing match scores and tailoring Cover Letters via Gemini AI.</p>
-              </div>
-
-              <div className="pt-4 border-t border-zinc-200 dark:border-zinc-850 flex justify-end">
-                <button
-                  type="submit"
-                  disabled={savingProfile}
-                  className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all shadow-md shadow-cyan-500/10 hover:scale-[1.01] cursor-pointer"
-                >
-                  {savingProfile ? "Saving Profile..." : "Save Profile Details"}
-                </button>
-              </div>
-            </form>
-          </div>
+        {activeTab === "profile" && user && (
+          <StudentProfile user={user as any} onProfileUpdated={fetchProfile} />
         )}
 
         {/* Tab 3: APPLICATIONS DASHBOARD */}
         {activeTab === "applications" && (
-          <div className="p-8 space-y-6 max-w-5xl w-full mx-auto">
-            <div className="border-b border-zinc-250 dark:border-zinc-900 pb-6 flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
-                  Track Applications
-                </h2>
-                <p className="text-xs text-zinc-555 dark:text-zinc-400 font-semibold mt-1">
-                  Track batch apply history and generated AI cover letters.
-                </p>
-              </div>
-              <button
-                onClick={fetchApplications}
-                disabled={loadingApplications}
-                className="p-2 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors disabled:opacity-50 cursor-pointer"
-              >
-                <RefreshCw className={`h-4.5 w-4.5 ${loadingApplications ? "animate-spin" : ""}`} />
-              </button>
-            </div>
-
-            {/* Quick Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white dark:bg-zinc-900/25 border border-zinc-200 dark:border-zinc-900 rounded-2xl p-5 flex items-center justify-between shadow-[0_2px_12px_rgba(0,0,0,0.01)]">
-                <div>
-                  <span className="text-[10px] font-bold text-zinc-450 dark:text-zinc-500 uppercase tracking-wider block">Submitted Apps</span>
-                  <span className="text-2xl font-black text-zinc-850 dark:text-zinc-100 mt-1 block">{applications.length}</span>
-                </div>
-                <div className="h-10 w-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                  <LayoutDashboard className="h-5 w-5 text-cyan-500 dark:text-cyan-400" />
-                </div>
-              </div>
-
-              <div className="bg-white dark:bg-zinc-900/25 border border-zinc-200 dark:border-zinc-900 rounded-2xl p-5 flex items-center justify-between shadow-[0_2px_12px_rgba(0,0,0,0.01)]">
-                <div>
-                  <span className="text-[10px] font-bold text-zinc-450 dark:text-zinc-500 uppercase tracking-wider block">Completed Gen</span>
-                  <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1 block">
-                    {applications.filter(app => app.coverLetter).length}
-                  </span>
-                </div>
-                <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                  <CheckCircle className="h-5 w-5 text-emerald-555 dark:text-emerald-400" />
-                </div>
-              </div>
-
-              <div className="bg-white dark:bg-zinc-900/25 border border-zinc-200 dark:border-zinc-900 rounded-2xl p-5 flex items-center justify-between shadow-[0_2px_12px_rgba(0,0,0,0.01)]">
-                <div>
-                  <span className="text-[10px] font-bold text-zinc-450 dark:text-zinc-500 uppercase tracking-wider block">Avg Match Score</span>
-                  <span className="text-2xl font-black text-purple-600 dark:text-purple-400 mt-1 block">85%</span>
-                </div>
-                <div className="h-10 w-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <Sparkles className="h-5 w-5 text-purple-500 dark:text-purple-400" />
-                </div>
-              </div>
-            </div>
-
-            {/* Applications List */}
-            {loadingApplications ? (
-              <div className="text-center py-10">
-                <RefreshCw className="h-6 w-6 text-cyan-400 animate-spin mx-auto mb-2" />
-                <span className="text-xs text-zinc-500">Loading submission records...</span>
-              </div>
-            ) : applications.length === 0 ? (
-              <div className="text-center py-16 border border-dashed border-zinc-200 dark:border-zinc-900 rounded-3xl space-y-3 bg-white dark:bg-zinc-950/20">
-                <FileText className="h-10 w-10 text-zinc-400 dark:text-zinc-650 mx-auto" />
-                <h3 className="text-sm font-bold text-zinc-550 dark:text-zinc-400">No Submissions Recorded</h3>
-                <p className="text-xs text-zinc-450 dark:text-zinc-500 max-w-xs mx-auto">
-                  Use the &apos;One-Click Apply&apos; tool on the Search Feed to submit batch applications first.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3.5">
-                {applications.map((app) => (
-                  <div
-                    key={app.id}
-                    className="border border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-900/20 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-zinc-300 dark:hover:border-zinc-800 transition-colors shadow-[0_2px_8px_rgba(0,0,0,0.01)]"
-                  >
-                    <div>
-                      <h4 className="font-bold text-sm text-zinc-850 dark:text-zinc-200">{app.title}</h4>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400 font-semibold mt-0.5">{app.company} • {app.location || "Remote"}</p>
-                      
-                      <div className="flex items-center gap-3 text-[10px] text-zinc-450 dark:text-zinc-500 mt-2 font-semibold">
-                        <span>Applied on {new Date(app.appliedAt).toLocaleDateString()}</span>
-                        <span>•</span>
-                        <span className="bg-zinc-100 dark:bg-zinc-850 px-2 py-0.5 rounded text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800">{app.source}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      {app.coverLetter && (
-                        <button
-                          onClick={() => setViewingCoverLetterApp(app)}
-                          className="text-xs px-3 py-1.5 rounded-lg border border-zinc-250 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:text-zinc-850 dark:hover:text-zinc-200 transition-colors flex items-center gap-1.5 cursor-pointer font-semibold"
-                        >
-                          <FileText className="h-3.5 w-3.5" /> Cover Letter
-                        </button>
-                      )}
-                      
-                      {app.applyUrl && (
-                        <a
-                          href={app.applyUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors flex items-center gap-1.5 font-bold animate-pulse"
-                        >
-                          Job Link <ExternalLink className="h-3 w-3" />
-                        </a>
-                      )}
-
-                      <span className="text-[10px] px-2.5 py-1 bg-emerald-100 dark:bg-emerald-950/20 text-emerald-705 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/60 rounded-md font-bold uppercase shrink-0">
-                        {app.status}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <StudentApplications
+            applications={applications}
+            loading={loadingApplications}
+            onRefresh={fetchApplications}
+            onViewCoverLetter={(app) => setViewingCoverLetterApp(app)}
+          />
         )}
       </main>
 

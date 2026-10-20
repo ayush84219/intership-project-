@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { createPostedJob, getPostedJobs, deletePostedJob } from "@/lib/db";
 
-// GET: list recruiter posted jobs
+// GET: list recruiter / company posted jobs
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -20,19 +20,31 @@ export async function GET(request: Request) {
   }
 }
 
-// POST: post a new job (recruiter action)
+// POST: post a new job (company/recruiter action)
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user?.email) {
       return NextResponse.json(
-        { success: false, error: "Unauthorized. Please sign in as a recruiter." },
+        { success: false, error: "Unauthorized. Please sign in as a company or recruiter." },
         { status: 401 }
       );
     }
 
     const body = await request.json();
-    const { title, company, location, salary, category, description, skills, applyUrl } = body;
+    const { 
+      title, 
+      company, 
+      location, 
+      salary, 
+      category, 
+      workType, 
+      duration, 
+      description, 
+      skills, 
+      requirements, 
+      applyUrl 
+    } = body;
 
     if (!title || !company || !location || !description) {
       return NextResponse.json(
@@ -53,10 +65,13 @@ export async function POST(request: Request) {
       title,
       company,
       location,
-      salary: salary || "Competitive",
-      category: category || "General",
+      salary: salary || "Competitive Stipend",
+      category: category || "Software Development",
+      workType: workType || "Remote",
+      duration: duration || "3 Months",
       description,
       skills: parsedSkills,
+      requirements: requirements || "",
       applyUrl: applyUrl || "",
     });
 

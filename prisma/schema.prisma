@@ -1,63 +1,175 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated"
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  email        String        @unique
-  name         String?
-  password     String?
-  profile      Profile?
-  role         String?       @default("STUDENT") // "STUDENT" | "RECRUITER"
-  savedJobs    SavedJob[]
-  applications Application[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id                 String        @id @default(cuid())
+  email              String        @unique
+  name               String?
+  password           String?
+  role               String        @default("STUDENT") // "STUDENT" | "COMPANY" | "TEACHER" | "ADMIN" (or legacy "RECRUITER")
+  verificationStatus String        @default("PENDING") // "PENDING" | "VERIFIED" | "REJECTED"
+  verificationNote   String?
+  
+  // Organization / Affiliations
+  collegeName        String?       // For Students & College Teachers
+  companyName        String?       // For Companies
+  department         String?       // For Teachers (e.g. "Computer Science & Engineering")
+  designation        String?       // For Teachers (e.g. "Head of Placements", "Associate Professor")
+  employeeId         String?       // For Teachers (Faculty ID)
+  studentId          String?       // For Students (Roll / Registration No)
+  phone              String?
+  website            String?
+  bio                String?
+  avatarUrl          String?
+  location           String?
+
+  // Relations
+  profile            Profile?
+  companyProfile     CompanyProfile?
+  teacherProfile     TeacherProfile?
+  
+  savedJobs          SavedJob[]
+  applications       Application[]
+  postedJobs         PostedJob[]
+  
+  // Endorsements received (for students from teachers)
+  studentEndorsements StudentEndorsement[] @relation("StudentEndorsement")
+  // Endorsements given (by teachers to students)
+  givenEndorsements   StudentEndorsement[] @relation("TeacherEndorsement")
+
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+model Profile {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  degree             String   // e.g. "Computer Science", "BBA", "Design", etc.
+  college            String?
+  studentId          String?  // Roll No
+  skills             String   // Comma-separated or JSON string
+  targetRoles        String   // Comma-separated or JSON string
+  resumeUrl          String?
+  githubUrl          String?
+  linkedinUrl        String?
+  portfolioUrl       String?
+  gpa                String?
+  graduationYear     String?
+  bio                String?
+  isAcademicVerified Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model CompanyProfile {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName    String
+  tagline        String?
+  industry       String?   // e.g. "Software & Tech", "FinTech", "Consulting", "HealthTech"
+  companySize    String?   // e.g. "1-10", "11-50", "50-200", "500+"
+  website        String?
+  headquarters   String?
+  about          String?
+  foundedYear    String?
+  logoUrl        String?
+  verifiedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model TeacherProfile {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collegeName    String
+  department     String    // e.g. "Computer Science & Engineering"
+  designation    String    // e.g. "Placement Officer", "Assistant Professor"
+  facultyId      String?
+  officialEmail  String?
+  officeLocation String?
+  bio            String?
+  verifiedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model StudentEndorsement {
+  id               String   @id @default(cuid())
+  studentId        String
+  student          User     @relation("StudentEndorsement", fields: [studentId], references: [id], onDelete: Cascade)
+  teacherId        String
+  teacher          User     @relation("TeacherEndorsement", fields: [teacherId], references: [id], onDelete: Cascade)
+  skill            String?  // specific skill endorsed or "Academic Excellence"
+  endorsement      String   // Faculty recommendation statement
+  rating           Int      @default(5) // 1-5 rating
+  verifiedAcademic Boolean  @default(true)
+  createdAt        DateTime @default(now())
 }
 
 model PostedJob {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  id             String        @id @default(cuid())
+  recruiterId    String?
+  recruiter      User?         @relation(fields: [recruiterId], references: [id], onDelete: SetNull)
   recruiterEmail String
   recruiterName  String?
   title          String
   company        String
   location       String
   salary         String?
-  category       String   @default("General")
+  category       String        @default("General")
+  workType       String        @default("Remote") // "Remote" | "Hybrid" | "On-site"
+  duration       String?       // e.g. "3 Months", "6 Months"
   description    String
-  skills         String   // Comma-separated skills
+  skills         String        // Comma-separated skills
+  requirements   String?
   applyUrl       String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  status         String        @default("ACTIVE") // "ACTIVE" | "CLOSED"
+  isVerified     Boolean       @default(false)
+  applications   Application[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
 
-model Profile {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @unique @db.ObjectId
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  degree      String   // e.g. "Computer Science", "BBA", "Design", etc.
-  skills      String   // Stored as serialized JSON string or comma-separated values
-  targetRoles String   // Stored as serialized JSON string or comma-separated values
-  resumeUrl   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Application {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobId       String
+  postedJob   PostedJob? @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  title       String
+  company     String
+  location    String?
+  source      String     // e.g., "Company Direct", "LinkedIn", "Internverse"
+  applyUrl    String?
+  status      String     @default("Applied") // "Applied", "Reviewing", "Shortlisted", "Interviewing", "Offer", "Rejected"
+  coverLetter String?
+  notes       String?
+  appliedAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
+
+  @@unique([userId, jobId])
 }
 
 model SavedJob {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
+  id        String   @id @default(cuid())
+  userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   jobId     String
   title     String
   company   String
   location  String?
   salary    String?
-  source    String   // e.g., "LinkedIn", "JSearch", "Jooble", "Adzuna"
+  source    String
   applyUrl  String?
   createdAt DateTime @default(now())
 
@@ -65,26 +177,9 @@ model SavedJob {
 }
 
 model DegreeKeywordMapping {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  degree    String   @unique // e.g., "Computer Science", "BBA", "Design"
-  keywords  String   // Comma-separated query keywords for job board search
+  id        String   @id @default(cuid())
+  degree    String   @unique
+  keywords  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model Application {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @db.ObjectId
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  jobId       String
-  title       String
-  company     String
-  location    String?
-  source      String   // e.g., "LinkedIn", "Indeed"
-  applyUrl    String?
-  status      String   // "Applied", "Reviewing", "Interviewing", "Offer", "Rejected"
-  coverLetter String?  // AI-generated cover letter
-  appliedAt   DateTime @default(now())
-
-  @@unique([userId, jobId])
 }

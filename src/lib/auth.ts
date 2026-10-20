@@ -31,12 +31,20 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Incorrect password");
         }
 
+        // Normalize RECRUITER to COMPANY
+        let role = user.role || "STUDENT";
+        if (role === "RECRUITER") role = "COMPANY";
+
         return {
           id: user.id || "",
           email: user.email,
           name: user.name,
-          role: user.role || "STUDENT"
-        };
+          role,
+          verificationStatus: user.verificationStatus || "PENDING",
+          collegeName: user.collegeName || null,
+          companyName: user.companyName || null,
+          department: user.department || null,
+        } as any;
       }
     })
   ],
@@ -51,6 +59,10 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.verificationStatus = user.verificationStatus;
+        token.collegeName = user.collegeName;
+        token.companyName = user.companyName;
+        token.department = user.department;
       }
       return token;
     },
@@ -58,6 +70,10 @@ export const authOptions: NextAuthOptions = {
       if (token && session.user) {
         session.user.id = token.id;
         session.user.role = token.role;
+        session.user.verificationStatus = token.verificationStatus;
+        session.user.collegeName = token.collegeName;
+        session.user.companyName = token.companyName;
+        session.user.department = token.department;
       }
       return session;
     }
