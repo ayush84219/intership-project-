@@ -54,6 +54,16 @@ export default function Sidebar({
 
   const isVerified = user?.verificationStatus === "VERIFIED";
 
+  const handleSignOut = async () => {
+    try {
+      await signOut({ redirect: false });
+    } catch (err) {
+      console.error("Sign out error:", err);
+    } finally {
+      window.location.href = "/login";
+    }
+  };
+
   // Navigation Items per role
   const studentMenuItems = [
     {
@@ -340,7 +350,7 @@ export default function Sidebar({
           </div>
 
           <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
+            onClick={handleSignOut}
             className="w-full mt-4 py-2 bg-zinc-800/50 hover:bg-red-950/20 border border-zinc-700/60 hover:border-red-900/40 text-zinc-400 hover:text-red-400 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
           >
             <LogOut className="h-3.5 w-3.5" /> Sign Out
