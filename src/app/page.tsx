@@ -60,7 +60,8 @@ export default function Home() {
   const [loadingApplications, setLoadingApplications] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
 
-  // Search & Selection states
+  // Search, Track & Selection states
+  const [activeTrack, setActiveTrack] = useState<"engineering" | "bba">("engineering");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlatform, setSelectedPlatform] = useState<string>("all");
   const [selectedJobIds, setSelectedJobIds] = useState<Record<string, boolean>>({});
@@ -147,7 +148,17 @@ export default function Home() {
           setActiveTab("feed");
         }
         // Pre-fetch jobs based on user profile degree if they have one, or default degree if not
-        const targetDegree = data.user.profile?.degree || "Bachelor of Technology (B.Tech)";
+        const userDegree = data.user.profile?.degree || "";
+        const isBus = userDegree.toLowerCase().includes("bba") || 
+                      userDegree.toLowerCase().includes("business") || 
+                      userDegree.toLowerCase().includes("mba") || 
+                      userDegree.toLowerCase().includes("commerce") || 
+                      userDegree.toLowerCase().includes("marketing") || 
+                      userDegree.toLowerCase().includes("finance");
+        const detectedTrack = isBus ? "bba" : "engineering";
+        setActiveTrack(detectedTrack);
+
+        const targetDegree = userDegree || (isBus ? "Bachelor of Business Administration (BBA)" : "Bachelor of Technology (B.Tech)");
         fetchJobs(targetDegree);
       } else {
         fetchJobs("Bachelor of Technology (B.Tech)");
@@ -161,7 +172,7 @@ export default function Home() {
   }
 
   async function fetchJobs(
-    degree: string, 
+    degree?: string, 
     customQuery?: string, 
     platform?: string, 
     location?: string,
@@ -170,13 +181,19 @@ export default function Home() {
   ) {
     setLoadingJobs(true);
     try {
+      const currentTrackDegree = activeTrack === "engineering" 
+        ? "Bachelor of Technology (B.Tech)" 
+        : "Bachelor of Business Administration (BBA)";
+      const degreeParam = degree !== undefined && degree !== "" 
+        ? degree 
+        : (user?.profile?.degree || currentTrackDegree);
       const queryParam = customQuery !== undefined ? customQuery : searchQuery;
       const platformParam = platform !== undefined ? platform : selectedPlatform;
       const locationParam = location !== undefined ? location : activeLocation;
       const excludeParam = exclude !== undefined ? exclude : excludeLocation;
       const dateParam = dateFilter !== undefined ? dateFilter : datePosted;
       
-      let url = `/api/jobs?degree=${encodeURIComponent(degree)}&query=${encodeURIComponent(queryParam)}&platform=${encodeURIComponent(platformParam)}`;
+      let url = `/api/jobs?degree=${encodeURIComponent(degreeParam)}&query=${encodeURIComponent(queryParam)}&platform=${encodeURIComponent(platformParam)}`;
       if (locationParam) {
         url += `&location=${encodeURIComponent(locationParam)}`;
       }
@@ -261,8 +278,7 @@ export default function Home() {
     setCustomLocation("");
     setActiveLocation(stateVal);
     
-    const degree = user?.profile?.degree || "";
-    await fetchJobs(degree, searchQuery, selectedPlatform, stateVal, excludeLocation, datePosted);
+    await fetchJobs(undefined, searchQuery, selectedPlatform, stateVal, excludeLocation, datePosted);
   };
 
   const handleCityChange = async (cityVal: string) => {
@@ -271,32 +287,23 @@ export default function Home() {
     const loc = cityVal ? `${cityVal}, ${selectedState}` : selectedState;
     setActiveLocation(loc);
     
-    const degree = user?.profile?.degree || "";
-    await fetchJobs(degree, searchQuery, selectedPlatform, loc, excludeLocation, datePosted);
+    await fetchJobs(undefined, searchQuery, selectedPlatform, loc, excludeLocation, datePosted);
   };
 
-  const handleCustomLocationChange = async (val: string) => {
+  const handleCustomLocationChange = (val: string) => {
     setCustomLocation(val);
     setSelectedState("");
     setSelectedCity("");
     setActiveLocation(val);
-    
-    const degree = user?.profile?.degree || "";
-    await fetchJobs(degree, searchQuery, selectedPlatform, val, excludeLocation, datePosted);
   };
 
-  const handleExcludeLocationChange = async (val: string) => {
+  const handleExcludeLocationChange = (val: string) => {
     setExcludeLocation(val);
-    
-    const degree = user?.profile?.degree || "";
-    await fetchJobs(degree, searchQuery, selectedPlatform, activeLocation, val, datePosted);
   };
 
   const handleDatePostedChange = async (val: string) => {
     setDatePosted(val);
-    
-    const degree = user?.profile?.degree || "";
-    await fetchJobs(degree, searchQuery, selectedPlatform, activeLocation, excludeLocation, val);
+    await fetchJobs(undefined, searchQuery, selectedPlatform, activeLocation, excludeLocation, val);
   };
 
   const clearLocationFilter = async () => {
@@ -307,9 +314,26 @@ export default function Home() {
     setDatePosted("");
     setActiveLocation("");
     
-    const degree = user?.profile?.degree || "";
-    await fetchJobs(degree, searchQuery, selectedPlatform, "", "");
+    await fetchJobs(undefined, searchQuery, selectedPlatform, "", "", "");
   };
+
+  // Debounced search when user types custom location
+  useEffect(() => {
+    if (customLocation === "") return;
+    const timer = setTimeout(() => {
+      fetchJobs(undefined, searchQuery, selectedPlatform, customLocation, excludeLocation, datePosted);
+    }, 450);
+    return () => clearTimeout(timer);
+  }, [customLocation]);
+
+  // Debounced search when user types exclude location
+  useEffect(() => {
+    if (excludeLocation === "") return;
+    const timer = setTimeout(() => {
+      fetchJobs(undefined, searchQuery, selectedPlatform, activeLocation, excludeLocation, datePosted);
+    }, 450);
+    return () => clearTimeout(timer);
+  }, [excludeLocation]);
 
   const handleOnboardingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -494,26 +518,28 @@ export default function Home() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (user?.profile?.degree) {
-      fetchJobs(user.profile.degree);
-    }
+    fetchJobs(undefined, searchQuery);
   };
 
   const handlePlatformChange = (platform: string) => {
     setSelectedPlatform(platform);
-    if (user?.profile?.degree) {
-      fetchJobs(user.profile.degree, undefined, platform);
-    }
+    fetchJobs(undefined, undefined, platform);
   };
 
   const handleTrackSwitch = async (track: "engineering" | "bba") => {
-    if (!user) return;
-    setLoadingJobs(true);
-    try {
-      const defaultDegree = track === "engineering" 
-        ? "Computer Science & Engineering" 
-        : "Bachelor of Business Administration (BBA)";
-        
+    setActiveTrack(track);
+    setSearchQuery("");
+    setSelectedPlatform("all");
+
+    const defaultDegree = track === "engineering" 
+      ? "Bachelor of Technology (B.Tech)" 
+      : "Bachelor of Business Administration (BBA)";
+
+    // Immediately fetch jobs for the switched track!
+    await fetchJobs(defaultDegree, "", "all", activeLocation, excludeLocation, datePosted);
+
+    // Sync to user profile in background if logged in
+    if (user) {
       const defaultSkills = track === "engineering"
         ? "React, TypeScript, Python, TensorFlow, PyTorch, SQL"
         : "HR Management, Excel, Communication, Brand Strategy, Recruitment";
@@ -522,27 +548,24 @@ export default function Home() {
         ? "AI/ML Intern, Software Developer Intern"
         : "HR Intern, Assistant Manager Intern";
 
-      const res = await fetch("/api/profile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          degree: defaultDegree,
-          skills: defaultSkills,
-          targetRoles: defaultTargetRoles,
-        }),
-      });
+      try {
+        const res = await fetch("/api/profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            degree: defaultDegree,
+            skills: defaultSkills,
+            targetRoles: defaultTargetRoles,
+          }),
+        });
 
-      const data = await res.json();
-      if (data.success && data.user) {
-        setUser(data.user);
-        setSearchQuery("");
-        setSelectedPlatform("all");
-        await fetchJobs(defaultDegree, "", "all");
+        const data = await res.json();
+        if (data.success && data.user) {
+          setUser(data.user);
+        }
+      } catch (err) {
+        console.warn("Track switch background profile sync:", err);
       }
-    } catch (err) {
-      console.error("Track switch failed:", err);
-    } finally {
-      setLoadingJobs(false);
     }
   };
 
@@ -1039,9 +1062,7 @@ export default function Home() {
   }
 
   // MAIN DASHBOARD LAYOUT
-  const isEngineering = user?.profile?.degree?.toLowerCase().includes("engineer") || 
-                        user?.profile?.degree?.toLowerCase().includes("computer") ||
-                        user?.profile?.degree?.toLowerCase().includes("tech");
+  const isEngineering = activeTrack === "engineering";
 
   const totalSelectedCount = getSelectedJobsCount();
   const selectAllChecked = jobs.length > 0 && jobs.every(job => 
@@ -1199,13 +1220,25 @@ export default function Home() {
                   type="text"
                   placeholder={
                     isEngineering
-                      ? "Search AI/ML, Fullstack, Frontend, UI/UX Design..."
-                      : "Search HR, Brand Manager, Consultant, Digital Marketing..."
+                      ? "Search AI/ML, Fullstack, Frontend, UI/UX Design, skills..."
+                      : "Search HR, Brand Manager, Consultant, Digital Marketing, skills..."
                   }
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-850 hover:border-zinc-300 dark:hover:border-zinc-800 focus:border-cyan-500 text-zinc-900 dark:text-zinc-200 pl-11 pr-4 py-3 rounded-xl outline-none text-sm font-semibold transition-all shadow-[0_2px_8px_rgba(0,0,0,0.01)]"
+                  className="w-full bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-850 hover:border-zinc-300 dark:hover:border-zinc-800 focus:border-cyan-500 text-zinc-900 dark:text-zinc-200 pl-11 pr-10 py-3 rounded-xl outline-none text-sm font-semibold transition-all shadow-[0_2px_8px_rgba(0,0,0,0.01)]"
                 />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      fetchJobs(undefined, "");
+                    }}
+                    className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer p-0.5"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
               </div>
               <button
                 type="submit"
@@ -1327,23 +1360,31 @@ export default function Home() {
               {(isEngineering
                 ? ["AI/ML", "React Developer", "UI UX Design", "Fullstack Intern"]
                 : ["HR Generalist", "Brand Marketing", "Financial Analyst", "Management Intern"]
-              ).map((tag, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery(tag);
-                    fetchJobs(user?.profile?.degree || "", tag);
-                  }}
-                  className={`text-[10px] px-2.5 py-1 rounded-md border font-semibold transition-all cursor-pointer ${
-                    searchQuery === tag
-                      ? "bg-cyan-100/50 dark:bg-cyan-950/20 text-cyan-600 dark:text-cyan-400 border-cyan-300 dark:border-cyan-800/60"
-                      : "bg-white dark:bg-zinc-900/40 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-850 hover:border-zinc-300 dark:hover:border-zinc-700"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
+              ).map((tag, idx) => {
+                const isActive = searchQuery.toLowerCase() === tag.toLowerCase();
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      if (isActive) {
+                        setSearchQuery("");
+                        fetchJobs(undefined, "");
+                      } else {
+                        setSearchQuery(tag);
+                        fetchJobs(undefined, tag);
+                      }
+                    }}
+                    className={`text-[10px] px-2.5 py-1 rounded-md border font-semibold transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-cyan-100/60 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-300 border-cyan-400 dark:border-cyan-700 shadow-xs"
+                        : "bg-white dark:bg-zinc-900/40 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-850 hover:border-zinc-300 dark:hover:border-zinc-700"
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Source Platforms Filter */}
@@ -1351,8 +1392,9 @@ export default function Home() {
               <span className="text-xs text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-wider">Source Platforms:</span>
               {[
                 { name: "All Platforms", value: "all" },
-                { name: "Naukri.com", value: "naukri" },
+                { name: "Direct Recruiters", value: "recruiter" },
                 { name: "Internshala.com", value: "internshala" },
+                { name: "Naukri.com", value: "naukri" },
                 { name: "Apna.com", value: "apna" },
                 { name: "Shine.com", value: "shine" }
               ].map((platform, idx) => (
@@ -1409,12 +1451,65 @@ export default function Home() {
                 ))}
               </div>
             ) : jobs.length === 0 ? (
-              <div className="text-center py-16 border border-dashed border-zinc-200 dark:border-zinc-900 rounded-3xl space-y-3 bg-white dark:bg-zinc-950/20">
-                <AlertCircle className="h-10 w-10 text-zinc-400 dark:text-zinc-650 mx-auto" />
-                <h3 className="text-sm font-bold text-zinc-500 dark:text-zinc-400">No Internships Found</h3>
-                <p className="text-xs text-zinc-400 dark:text-zinc-500 max-w-xs mx-auto">
-                  Try adjusting search keywords or changing the track toggle to reload default roles.
-                </p>
+              <div className="text-center py-12 px-6 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl space-y-4 bg-white dark:bg-zinc-900/40 shadow-xs animate-fade-in">
+                <div className="h-12 w-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center mx-auto">
+                  <AlertCircle className="h-6 w-6" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">No Internships Found</h3>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-md mx-auto">
+                    {searchQuery && activeLocation 
+                      ? `No matching openings for "${searchQuery}" in ${activeLocation}.`
+                      : searchQuery 
+                        ? `No matching openings found for "${searchQuery}".`
+                        : activeLocation
+                          ? `No openings currently available in ${activeLocation}.`
+                          : "No openings match your current filter combination."}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                  {activeLocation && (
+                    <button
+                      type="button"
+                      onClick={clearLocationFilter}
+                      className="text-xs px-3.5 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-semibold border border-zinc-250 dark:border-zinc-700 transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                      Clear Location ({activeLocation})
+                    </button>
+                  )}
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery("");
+                        fetchJobs(undefined, "");
+                      }}
+                      className="text-xs px-3.5 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-semibold border border-zinc-250 dark:border-zinc-700 transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                      Clear Search Query
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSelectedPlatform("all");
+                      setSelectedState("");
+                      setSelectedCity("");
+                      setCustomLocation("");
+                      setExcludeLocation("");
+                      setDatePosted("");
+                      setActiveLocation("");
+                      fetchJobs(undefined, "", "all", "", "", "");
+                    }}
+                    className="text-xs px-4 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold shadow-md shadow-cyan-500/10 transition-all cursor-pointer"
+                  >
+                    Reset All Filters
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="space-y-4">
