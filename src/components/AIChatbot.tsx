@@ -195,19 +195,19 @@ export default function AIChatbot() {
 
       {/* Chat Window Panel */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-[420px] max-w-[calc(100vw-2rem)] h-[580px] max-h-[calc(100vh-8rem)] rounded-3xl border border-zinc-800/80 bg-zinc-950/95 backdrop-blur-lg flex flex-col shadow-[0_12px_40px_rgba(0,0,0,0.7)] animate-slide-up z-50 font-sans overflow-hidden">
+        <div className="fixed bottom-24 right-6 w-[420px] max-w-[calc(100vw-2rem)] h-[580px] max-h-[calc(100vh-8rem)] rounded-3xl border border-zinc-200 dark:border-zinc-800/80 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-lg flex flex-col shadow-2xl dark:shadow-[0_12px_40px_rgba(0,0,0,0.7)] animate-slide-up z-50 font-sans overflow-hidden transition-colors">
           {/* Header */}
-          <div className="p-4 border-b border-zinc-900 bg-gradient-to-r from-zinc-900/50 to-zinc-950 flex items-center justify-between">
+          <div className="p-4 border-b border-zinc-200 dark:border-zinc-900 bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="bg-gradient-to-tr from-cyan-500/15 to-purple-500/15 border border-cyan-500/20 p-2 rounded-xl">
-                <Sparkles className="h-4.5 w-4.5 text-cyan-400 animate-spin-slow" />
+                <Sparkles className="h-4.5 w-4.5 text-cyan-500 dark:text-cyan-400 animate-spin-slow" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-zinc-100 flex items-center gap-1.5 leading-none">
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5 leading-none">
                   Google AI Overview
                 </h3>
-                <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider flex items-center gap-1 mt-1 leading-none">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping inline-block" /> Live SerpApi Agent
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold uppercase tracking-wider flex items-center gap-1 mt-1 leading-none">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping inline-block" /> Live SerpApi Agent
                 </span>
               </div>
             </div>
@@ -216,13 +216,13 @@ export default function AIChatbot() {
               <button
                 onClick={clearChat}
                 title="Clear Chat History"
-                className="p-2 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-zinc-900/60 transition-all cursor-pointer"
+                className="p-2 rounded-lg text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition-all cursor-pointer"
               >
                 <Trash2 className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/60 transition-all cursor-pointer"
+                className="p-2 rounded-lg text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition-all cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -230,7 +230,7 @@ export default function AIChatbot() {
           </div>
 
           {/* Messages Body */}
-          <div className="flex-1 p-5 overflow-y-auto space-y-4 select-text scrollbar-thin scrollbar-thumb-zinc-800/80 scrollbar-track-transparent">
+          <div className="flex-1 p-5 overflow-y-auto space-y-4 select-text scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-800/80 scrollbar-track-transparent">
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -240,8 +240,8 @@ export default function AIChatbot() {
               >
                 {/* Avatar icon */}
                 {msg.sender === "ai" && (
-                  <div className="h-7.5 w-7.5 rounded-lg bg-cyan-950/50 border border-cyan-900/40 flex items-center justify-center shrink-0">
-                    <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+                  <div className="h-7.5 w-7.5 rounded-lg bg-cyan-50 dark:bg-cyan-950/50 border border-cyan-200 dark:border-cyan-900/40 flex items-center justify-center shrink-0">
+                    <Sparkles className="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" />
                   </div>
                 )}
 
@@ -250,13 +250,13 @@ export default function AIChatbot() {
                     className={`p-4.5 rounded-2xl text-xs leading-relaxed border ${
                       msg.sender === "student"
                         ? "bg-gradient-to-tr from-cyan-500 to-blue-600 border-cyan-400/20 text-black font-bold shadow-md shadow-cyan-500/5 rounded-tr-sm"
-                        : "bg-zinc-900/40 border-zinc-905 text-zinc-300 rounded-tl-sm"
+                        : "bg-zinc-100/90 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-tl-sm shadow-xs"
                     }`}
                   >
                     {msg.sender === "ai" ? renderMarkdown(msg.text) : msg.text}
                   </div>
                   <div
-                    className={`text-[9px] text-zinc-500 font-semibold tracking-wide ${
+                    className={`text-[9px] text-zinc-500 dark:text-zinc-400 font-semibold tracking-wide ${
                       msg.sender === "student" ? "text-right" : ""
                     }`}
                   >
@@ -269,10 +269,10 @@ export default function AIChatbot() {
             {/* AI Typing Indicator */}
             {loading && (
               <div className="flex gap-2.5 max-w-[85%]">
-                <div className="h-7.5 w-7.5 rounded-lg bg-cyan-950/50 border border-cyan-900/40 flex items-center justify-center shrink-0">
-                  <Sparkles className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
+                <div className="h-7.5 w-7.5 rounded-lg bg-cyan-50 dark:bg-cyan-950/50 border border-cyan-200 dark:border-cyan-900/40 flex items-center justify-center shrink-0">
+                  <Sparkles className="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400 animate-pulse" />
                 </div>
-                <div className="bg-zinc-900/40 border-zinc-905 p-4 rounded-2xl rounded-tl-sm flex items-center gap-1.5">
+                <div className="bg-zinc-100/90 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 p-4 rounded-2xl rounded-tl-sm flex items-center gap-1.5 shadow-xs">
                   <div className="h-2 w-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: "0ms" }} />
                   <div className="h-2 w-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: "150ms" }} />
                   <div className="h-2 w-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: "300ms" }} />
@@ -285,7 +285,7 @@ export default function AIChatbot() {
           {/* Footer Input Bar */}
           <form
             onSubmit={handleSend}
-            className="p-4 border-t border-zinc-900/80 bg-zinc-950 flex items-center gap-2.5"
+            className="p-4 border-t border-zinc-200 dark:border-zinc-900/80 bg-zinc-50 dark:bg-zinc-950 flex items-center gap-2.5"
           >
             <input
               type="text"
@@ -294,7 +294,7 @@ export default function AIChatbot() {
               placeholder="Ask AI Overview (e.g. Coffee spots...)"
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
-              className="flex-1 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 focus:border-cyan-500 text-zinc-200 px-4 py-3 rounded-2-xl outline-none transition-all text-xs font-semibold"
+              className="flex-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-cyan-500 text-zinc-900 dark:text-zinc-200 px-4 py-3 rounded-2xl outline-none transition-all text-xs font-semibold placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
             />
             <button
               type="submit"

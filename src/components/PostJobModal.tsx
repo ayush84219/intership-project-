@@ -80,43 +80,43 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fade-in font-sans">
-      <div className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative my-8">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fade-in font-sans">
+      <div className="w-full max-w-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl relative my-8">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 p-2 rounded-xl bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+          className="absolute top-6 right-6 p-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
 
         {/* Modal Header */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <Building2 className="h-6 w-6" />
+          <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+            <Building2 className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-zinc-100 flex items-center gap-2">
-              Post a Job Opening
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold uppercase tracking-wider">
+            <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+              Post an Internship Opening
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-semibold uppercase tracking-wider">
                 Recruiter Portal
               </span>
             </h2>
-            <p className="text-xs text-zinc-400 mt-0.5">
-              Publish internships & job roles directly to our student base.
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Publish internships directly to our verified student talent pool.
             </p>
           </div>
         </div>
 
         {errorMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-red-950/40 border border-red-900/50 text-red-400 text-xs font-semibold">
+          <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400 text-xs font-medium">
             {errorMsg}
           </div>
         )}
 
         {successMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-emerald-950/40 border border-emerald-900/50 text-emerald-400 text-xs font-semibold flex items-center gap-2">
-            <CheckCircle className="h-4 w-4 shrink-0" />
+          <div className="mb-4 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 text-emerald-700 dark:text-emerald-400 text-xs font-medium flex items-center gap-2">
+            <CheckCircle className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
             <span>{successMsg}</span>
           </div>
         )}
@@ -125,11 +125,11 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Job Title */}
             <div className="space-y-1">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+              <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider block">
                 Job Title *
               </label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
                   <FileText className="h-4 w-4" />
                 </span>
                 <input
@@ -138,18 +138,18 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
                   placeholder="e.g. AI / ML Engineering Intern"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 hover:border-zinc-700 focus:border-emerald-500 text-zinc-200 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-semibold"
+                  className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-zinc-900 dark:text-zinc-100 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-medium"
                 />
               </div>
             </div>
 
             {/* Company Name */}
             <div className="space-y-1">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+              <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider block">
                 Company Name *
               </label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
                   <Building2 className="h-4 w-4" />
                 </span>
                 <input
@@ -158,7 +158,7 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
                   placeholder="e.g. TechCorp Solutions"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 hover:border-zinc-700 focus:border-emerald-500 text-zinc-200 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-semibold"
+                  className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-zinc-900 dark:text-zinc-100 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-medium"
                 />
               </div>
             </div>
@@ -167,11 +167,11 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Location */}
             <div className="space-y-1">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+              <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider block">
                 Location *
               </label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
                   <MapPin className="h-4 w-4" />
                 </span>
                 <input
@@ -180,18 +180,18 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
                   placeholder="e.g. Ludhiana / Hybrid"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 hover:border-zinc-700 focus:border-emerald-500 text-zinc-200 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-semibold"
+                  className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-zinc-900 dark:text-zinc-100 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-medium"
                 />
               </div>
             </div>
 
             {/* Salary */}
             <div className="space-y-1">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+              <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider block">
                 Stipend / Salary
               </label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
                   <DollarSign className="h-4 w-4" />
                 </span>
                 <input
@@ -199,20 +199,20 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
                   placeholder="e.g. $30 - $45 / hr"
                   value={salary}
                   onChange={(e) => setSalary(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 hover:border-zinc-700 focus:border-emerald-500 text-zinc-200 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-semibold"
+                  className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-zinc-900 dark:text-zinc-100 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-medium"
                 />
               </div>
             </div>
 
             {/* Category */}
             <div className="space-y-1">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+              <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider block">
                 Category
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-zinc-950 border border-zinc-800 hover:border-zinc-700 focus:border-emerald-500 text-zinc-200 px-3 py-2.5 rounded-xl outline-none text-xs font-semibold"
+                className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 text-zinc-900 dark:text-zinc-100 px-3 py-2.5 rounded-xl outline-none text-xs font-medium"
               >
                 <option value="Software Development">Software Development</option>
                 <option value="AI/ML">AI / Machine Learning</option>
@@ -227,11 +227,11 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
 
           {/* Required Skills */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+            <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider block">
               Required Skills (comma separated)
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
                 <Tag className="h-4 w-4" />
               </span>
               <input
@@ -239,18 +239,18 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
                 placeholder="e.g. Python, React, PyTorch, SQL"
                 value={skills}
                 onChange={(e) => setSkills(e.target.value)}
-                className="w-full bg-zinc-950 border border-zinc-800 hover:border-zinc-700 focus:border-emerald-500 text-zinc-200 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-semibold"
+                className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-zinc-900 dark:text-zinc-100 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-medium"
               />
             </div>
           </div>
 
           {/* External Apply Link (Optional) */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+            <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider block">
               External Apply Link (Optional)
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
                 <Link2 className="h-4 w-4" />
               </span>
               <input
@@ -258,14 +258,14 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
                 placeholder="https://company.careers/job/123 (Leave blank for internal portal applications)"
                 value={applyUrl}
                 onChange={(e) => setApplyUrl(e.target.value)}
-                className="w-full bg-zinc-950 border border-zinc-800 hover:border-zinc-700 focus:border-emerald-500 text-zinc-200 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-semibold"
+                className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-zinc-900 dark:text-zinc-100 pl-10 pr-4 py-2.5 rounded-xl outline-none text-xs font-medium"
               />
             </div>
           </div>
 
           {/* Description */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+            <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider block">
               Job Description *
             </label>
             <textarea
@@ -274,7 +274,7 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
               placeholder="Detail the role responsibilities, qualifications, requirements, and benefits..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-zinc-950 border border-zinc-800 hover:border-zinc-700 focus:border-emerald-500 text-zinc-200 p-3 rounded-xl outline-none text-xs font-medium leading-relaxed resize-none"
+              className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-zinc-900 dark:text-zinc-100 p-3 rounded-xl outline-none text-xs font-medium leading-relaxed resize-none"
             />
           </div>
 
@@ -282,15 +282,15 @@ export default function PostJobModal({ isOpen, onClose, onJobPosted }: PostJobMo
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-4 py-3.5 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-black font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/10 text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
+            className="w-full mt-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-sm text-xs uppercase tracking-wide flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
           >
             {loading ? (
               <>
-                <RefreshCw className="h-4 w-4 animate-spin text-black" /> Publishing...
+                <RefreshCw className="h-4 w-4 animate-spin text-white" /> Publishing...
               </>
             ) : (
               <>
-                Publish Job Listing <Sparkles className="h-4.5 w-4.5 fill-black" />
+                Publish Job Listing <Sparkles className="h-4 w-4" />
               </>
             )}
           </button>

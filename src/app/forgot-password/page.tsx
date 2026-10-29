@@ -119,15 +119,15 @@ export default function ForgotPasswordPage() {
 
       <div className="w-full max-w-md bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-md rounded-3xl p-10 shadow-[0_4px_30px_rgba(0,0,0,0.4)] relative z-10 animate-fade-in">
         <div className="flex flex-col items-center gap-3 mb-8 text-center">
-          <div className="h-20 w-20 rounded-full bg-white border border-zinc-800/80 overflow-hidden flex items-center justify-center shadow-lg shadow-black/25 shrink-0">
+          <div className="h-16 w-16 rounded-2xl bg-zinc-900 border border-zinc-800 overflow-hidden flex items-center justify-center shadow-lg shadow-black/25 shrink-0 p-2">
             <img 
               src="/logo.png" 
-              alt="Job Finder Logo" 
-              className="h-24 w-auto object-cover object-top scale-[1.5] translate-y-[3px]" 
+              alt="Internverse Logo" 
+              className="h-full w-auto object-contain" 
             />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-zinc-100 font-sans tracking-tight">Job Finder</h1>
+            <h1 className="text-2xl font-bold text-zinc-100 font-sans tracking-tight">Internverse</h1>
             <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mt-1">Account Recovery &bull; Secure Portal</p>
           </div>
         </div>

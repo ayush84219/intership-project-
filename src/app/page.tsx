@@ -18,7 +18,8 @@ import {
   MapPin,
   Video,
   Award,
-  Clock
+  Clock,
+  ShieldCheck
 } from "lucide-react";
 
 import Sidebar from "../components/Sidebar";
@@ -30,7 +31,6 @@ import PostJobModal from "../components/PostJobModal";
 import RecruiterDashboard from "../components/RecruiterDashboard";
 import AdminDashboard from "../components/AdminDashboard";
 import TeacherDashboard from "../components/TeacherDashboard";
-import RoleSwitcherBar from "../components/RoleSwitcherBar";
 import StudentProfile from "../components/StudentProfile";
 import StudentApplications from "../components/StudentApplications";
 import { useSession } from "next-auth/react";
@@ -49,7 +49,7 @@ export default function Home() {
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-      return savedTheme || "dark";
+      if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
     }
     return "dark";
   });
@@ -94,8 +94,10 @@ export default function Home() {
   useEffect(() => {
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = "dark";
     } else {
       document.documentElement.classList.remove("dark");
+      document.documentElement.style.colorScheme = "light";
     }
 
     if (status === "unauthenticated") {
@@ -115,11 +117,15 @@ export default function Home() {
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
-    localStorage.setItem("theme", nextTheme);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("theme", nextTheme);
+    }
     if (nextTheme === "dark") {
       document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = "dark";
     } else {
       document.documentElement.classList.remove("dark");
+      document.documentElement.style.colorScheme = "light";
     }
   };
 
@@ -352,7 +358,7 @@ export default function Home() {
     const defaultCourse = selectedCourse ? (COURSE_PRESETS[selectedCourse]?.name || "Bachelor of Technology (B.Tech)") : "Bachelor of Technology (B.Tech)";
     const defaultSkills = selectedSkills.length > 0 ? selectedSkills.join(", ") : "React, TypeScript, Python, Communication";
     const defaultFields = selectedFields.length > 0 ? selectedFields.join(", ") : "Software Developer, AI/ML, General Intern";
-    const nameToSave = onboardingName.trim() || user?.name || "Job Finder User";
+    const nameToSave = onboardingName.trim() || user?.name || "Internverse Member";
 
     // Set user profile in state immediately
     setUser(prev => ({
@@ -552,41 +558,63 @@ export default function Home() {
   // Compile selected job objects
   const selectedJobsList = jobs.filter(job => selectedJobIds[job.id]);
 
-  // Startup Splash Flash Screen overlay
-  if (showFlash) {
+  // Startup Splash Flash Screen overlay & Session Initializer
+  if (showFlash || status === "loading" || (status === "authenticated" && loadingProfile)) {
     return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-zinc-950 transition-opacity duration-500 ease-in-out">
-        {/* Glow decoration behind logo */}
-        <div className="absolute w-[400px] h-[400px] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
-        
-        {/* Logo Circle Badge */}
-        <div className="flex flex-col items-center gap-4 animate-fade-in relative z-10">
-          <div className="h-24 w-24 rounded-full bg-white border border-zinc-800/80 overflow-hidden flex items-center justify-center shadow-2xl shadow-cyan-500/10 shrink-0">
-            <img 
-              src="/logo.png" 
-              alt="Job Finder Logo" 
-              className="h-28 w-auto object-cover object-top scale-[1.5] translate-y-[4px]" 
-            />
-          </div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent font-sans">
-            Job Finder
-          </h1>
-        </div>
-        
-        {/* Spinner & subtitle */}
-        <div className="mt-8 flex flex-col items-center gap-3 relative z-10">
-          <RefreshCw className="h-6 w-6 text-cyan-400 animate-spin" />
-          <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest text-center mt-1">Career Paths Made Simple</span>
-        </div>
-      </div>
-    );
-  }
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300 font-sans select-none overflow-hidden">
+        {/* Ambient Radial Mesh Background */}
+        <div className="absolute w-[500px] h-[500px] bg-gradient-to-tr from-blue-500/10 via-indigo-500/10 to-cyan-500/10 dark:from-blue-600/15 dark:via-indigo-600/10 dark:to-cyan-400/10 blur-[130px] rounded-full pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
 
-  if (status === "loading" || (status === "authenticated" && loadingProfile)) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-background text-foreground flex-col gap-4 font-sans transition-colors duration-300">
-        <RefreshCw className="h-8 w-8 text-cyan-400 animate-spin" />
-        <span className="text-sm font-semibold tracking-wider animate-pulse">Initializing Job Finder Portal...</span>
+        {/* Central Brand Emblem Card */}
+        <div className="flex flex-col items-center gap-5 animate-fade-in relative z-10">
+          <div className="relative group">
+            <div className="absolute -inset-1.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-400 rounded-3xl blur-lg opacity-30 dark:opacity-40 animate-pulse pointer-events-none" />
+            <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 p-3.5 flex items-center justify-center shadow-xl dark:shadow-2xl shadow-blue-500/10">
+              <img 
+                src="/logo.png" 
+                alt="Internverse Logo" 
+                className="h-full w-full object-contain filter drop-shadow-xs" 
+              />
+            </div>
+          </div>
+
+          {/* Brand Identity */}
+          <div className="text-center space-y-1.5">
+            <div className="flex items-center justify-center gap-2">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 font-sans">
+                Internverse
+              </h1>
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/60 shadow-2xs">
+                Portal
+              </span>
+            </div>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium tracking-wide">
+              Unified University &amp; Corporate Talent Network
+            </p>
+          </div>
+
+          {/* High-Tech Shimmer Progress Loader */}
+          <div className="w-56 sm:w-64 mt-4 space-y-2.5">
+            <div className="h-1.5 w-full bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden relative shadow-inner">
+              <div className="h-full w-1/2 bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400 rounded-full animate-shimmer-progress shadow-sm" />
+            </div>
+
+            <div className="flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400 font-medium px-0.5">
+              <span className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
+                <span>Initializing gateway...</span>
+              </span>
+              <span className="font-mono text-[10px] text-zinc-400 dark:text-zinc-500">v3.0</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Security & Compliance Footer */}
+        <div className="absolute bottom-6 flex items-center gap-2 text-[11px] text-zinc-400 dark:text-zinc-500 font-medium">
+          <ShieldCheck className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+          <span>Institutional Single Sign-On &bull; Role-Based Governance</span>
+        </div>
       </div>
     );
   }
@@ -603,15 +631,15 @@ export default function Home() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-250 dark:border-zinc-800 pb-5 mb-6 gap-4">
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-white border border-zinc-200 dark:border-zinc-800 overflow-hidden flex items-center justify-center shadow-sm shrink-0">
+              <div className="h-12 w-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 overflow-hidden flex items-center justify-center shadow-xs shrink-0 p-1.5">
                 <img 
                   src="/logo.png" 
-                  alt="Job Finder Logo" 
-                  className="h-14 w-auto object-cover object-top scale-[1.5] translate-y-[2px]" 
+                  alt="Internverse Logo" 
+                  className="h-full w-auto object-contain" 
                 />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-zinc-855 dark:text-zinc-100 font-sans leading-none">Job Finder</h1>
+                <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 font-sans leading-none">Internverse</h1>
                 <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider mt-1.5 block leading-none">Setup Career Gateway</span>
               </div>
             </div>
@@ -1021,7 +1049,7 @@ export default function Home() {
   );
 
   return (
-    <div className="flex h-screen bg-background text-foreground font-sans overflow-hidden transition-colors duration-300">
+    <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans overflow-hidden transition-colors duration-200">
       <Sidebar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
@@ -1032,29 +1060,90 @@ export default function Home() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-zinc-50/50 dark:bg-zinc-950/20 relative">
-        <RoleSwitcherBar currentRole={user?.role} />
+      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-zinc-50/70 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 relative transition-colors duration-200">
+        {/* Sleek Top Header Bar */}
+        <header className="h-14 border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/85 dark:bg-zinc-950/85 backdrop-blur-md px-6 sm:px-8 flex items-center justify-between sticky top-0 z-30 shrink-0 transition-colors">
+          <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+            <span className="font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">Internverse Portal</span>
+            <span>/</span>
+            <span className="font-semibold text-zinc-700 dark:text-zinc-300 capitalize">
+              {activeTab === "feed" ? "Internship Marketplace" : activeTab.replace(/admin_|teacher_|_jobs/g, " ").replace(/_/g, " ")}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[11px] text-zinc-600 dark:text-zinc-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>System Operational</span>
+            </div>
+
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider bg-zinc-100 dark:bg-zinc-850 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-750">
+              {user?.role || "STUDENT"}
+            </span>
+          </div>
+        </header>
+
         {/* ADMIN GOVERNANCE & VERIFICATION DASHBOARD */}
         {(activeTab === "admin_verify" || activeTab === "admin_users" || activeTab === "admin_analytics") && (
-          <div className="p-8 max-w-6xl w-full mx-auto">
-            <AdminDashboard />
+          <div className="p-6 sm:p-8 max-w-6xl w-full mx-auto">
+            <AdminDashboard
+              currentTab={
+                activeTab === "admin_users"
+                  ? "users"
+                  : activeTab === "admin_analytics"
+                  ? "analytics"
+                  : "verification"
+              }
+              onTabChange={(t) => {
+                if (t === "users") setActiveTab("admin_users");
+                else if (t === "analytics") setActiveTab("admin_analytics");
+                else setActiveTab("admin_verify");
+              }}
+            />
           </div>
         )}
 
         {/* COLLEGE TEACHER DASHBOARD */}
         {(activeTab === "students" || activeTab === "placements" || activeTab === "teacher_profile") && (
-          <div className="p-8 max-w-6xl w-full mx-auto">
-            <TeacherDashboard user={user as any} onProfileUpdated={fetchProfile} />
+          <div className="p-6 sm:p-8 max-w-6xl w-full mx-auto">
+            <TeacherDashboard
+              user={user as any}
+              onProfileUpdated={fetchProfile}
+              currentTab={
+                activeTab === "placements"
+                  ? "placements"
+                  : activeTab === "teacher_profile"
+                  ? "profile"
+                  : "students"
+              }
+              onTabChange={(t) => {
+                if (t === "placements") setActiveTab("placements");
+                else if (t === "profile") setActiveTab("teacher_profile");
+                else setActiveTab("students");
+              }}
+            />
           </div>
         )}
 
         {/* COMPANY / RECRUITER DASHBOARD */}
         {(activeTab === "posted_jobs" || activeTab === "applicants" || activeTab === "company_profile") && (
-          <div className="p-8 max-w-5xl w-full mx-auto">
+          <div className="p-6 sm:p-8 max-w-5xl w-full mx-auto">
             <RecruiterDashboard
               user={user as any}
               onOpenPostJobModal={() => setIsPostJobModalOpen(true)}
               onProfileUpdated={fetchProfile}
+              currentTab={
+                activeTab === "applicants"
+                  ? "applicants"
+                  : activeTab === "company_profile"
+                  ? "profile"
+                  : "posted_jobs"
+              }
+              onTabChange={(t) => {
+                if (t === "applicants") setActiveTab("applicants");
+                else if (t === "profile") setActiveTab("company_profile");
+                else setActiveTab("posted_jobs");
+              }}
             />
           </div>
         )}

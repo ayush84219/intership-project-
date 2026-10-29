@@ -1,25 +1,26 @@
 "use client";
-
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { 
-  Lock, 
-  Mail, 
-  User, 
-  Sparkles, 
-  RefreshCw, 
-  AlertCircle, 
-  GraduationCap, 
-  Building2, 
+import {
+  Lock,
+  Mail,
+  User,
+  Sparkles,
+  RefreshCw,
+  AlertCircle,
+  GraduationCap,
+  Building2,
   CheckCircle2,
   ArrowRight,
   Briefcase,
   BookOpen,
   Building,
   Globe,
-  Award
+  Award,
+  Sun,
+  Moon
 } from "lucide-react";
 
 type SignupRole = "STUDENT" | "COMPANY" | "TEACHER";
@@ -54,6 +55,37 @@ function SignupForm() {
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("theme") as "light" | "dark" | null;
+      if (saved === "light" || saved === "dark") {
+        setTheme(saved);
+        if (saved === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      } else {
+        const isDark = document.documentElement.classList.contains("dark");
+        setTheme(isDark ? "dark" : "light");
+      }
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("theme", nextTheme);
+    }
+    if (nextTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   // Sync role if query param changes
   useEffect(() => {
@@ -127,9 +159,18 @@ function SignupForm() {
 
   if (status === "loading") {
     return (
-      <div className="flex h-screen items-center justify-center bg-zinc-950 text-foreground flex-col gap-4 font-sans transition-colors duration-300">
-        <RefreshCw className="h-8 w-8 text-cyan-400 animate-spin" />
-        <span className="text-sm font-semibold tracking-wider text-zinc-400 animate-pulse">Checking credentials session...</span>
+      <div className="flex h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex-col gap-5 font-sans transition-colors duration-300">
+        <div className="relative h-16 w-16 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 p-2.5 flex items-center justify-center shadow-lg shadow-blue-500/10">
+          <img src="/logo.png" alt="Internverse Logo" className="h-full w-full object-contain" />
+        </div>
+        <div className="w-52 space-y-2 text-center">
+          <div className="h-1.5 w-full bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden relative shadow-inner">
+            <div className="h-full w-1/2 bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400 rounded-full animate-shimmer-progress shadow-sm" />
+          </div>
+          <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 animate-pulse block">
+            Verifying credential session...
+          </span>
+        </div>
       </div>
     );
   }
@@ -138,58 +179,79 @@ function SignupForm() {
     activePanel === "STUDENT"
       ? "bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black shadow-cyan-500/10"
       : activePanel === "COMPANY"
-      ? "bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-black shadow-emerald-500/10"
-      : "bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white shadow-purple-500/10";
+        ? "bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-black shadow-emerald-500/10"
+        : "bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white shadow-purple-500/10";
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-foreground flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden font-sans transition-colors duration-200">
+      {/* Light / Dark Mode Floating Toggle */}
+      <div className="absolute top-5 right-5 z-20">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="p-2.5 rounded-xl bg-white/90 dark:bg-zinc-900/90 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+          title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          aria-label="Toggle Theme"
+        >
+          {theme === "dark" ? (
+            <Sun className="h-4 w-4 text-amber-400" />
+          ) : (
+            <Moon className="h-4 w-4 text-blue-600" />
+          )}
+        </button>
+      </div>
+
       {/* Background glow graphics */}
-      <div 
-        className={`absolute top-1/4 left-1/4 w-96 h-96 blur-[140px] rounded-full pointer-events-none transition-all duration-700 ${
-          activePanel === "STUDENT" ? "bg-cyan-500/15" : activePanel === "COMPANY" ? "bg-emerald-500/15" : "bg-purple-500/15"
-        }`} 
+      <div
+        className={`absolute top-1/4 left-1/4 w-96 h-96 blur-[140px] rounded-full pointer-events-none transition-all duration-700 opacity-60 dark:opacity-100 ${
+          activePanel === "STUDENT"
+            ? "bg-cyan-500/15"
+            : activePanel === "COMPANY"
+            ? "bg-emerald-500/15"
+            : "bg-purple-500/15"
+        }`}
       />
 
       {/* Header / Brand */}
       <div className="flex flex-col items-center gap-3 mb-6 text-center z-10">
-        <div className="h-16 w-16 rounded-2xl bg-zinc-900 border border-zinc-800 overflow-hidden flex items-center justify-center shadow-xl shadow-black/40 p-2 group hover:scale-105 transition-transform duration-300">
-          <img 
-            src="/logo.png" 
-            alt="Internverse Logo" 
-            className="h-full w-auto object-contain" 
+        <div className="h-16 w-16 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden flex items-center justify-center shadow-md dark:shadow-xl shadow-black/20 p-2 group hover:scale-105 transition-transform duration-300">
+          <img
+            src="/logo.png"
+            alt="Internverse Logo"
+            className="h-full w-auto object-contain"
           />
         </div>
         <div>
-          <h1 className="text-2xl font-black text-zinc-100 font-sans tracking-tight flex items-center justify-center gap-2">
+          <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-100 font-sans tracking-tight flex items-center justify-center gap-2">
             Internverse Registration
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-400 font-medium uppercase tracking-wider">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-300 font-medium uppercase tracking-wider">
               Choose Role
             </span>
           </h1>
-          <p className="text-xs text-zinc-400 font-medium mt-1">
+          <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium mt-1">
             Student &bull; Company Employer &bull; College Teacher / Faculty
           </p>
         </div>
       </div>
 
       {/* Main Container Card */}
-      <div className="w-full max-w-xl bg-zinc-900/90 border border-zinc-800/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-[0_8px_40px_rgba(0,0,0,0.6)] relative z-10">
-        
+      <div className="w-full max-w-xl bg-white dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-xl dark:shadow-[0_8px_40px_rgba(0,0,0,0.6)] relative z-10 transition-colors duration-200">
+
         {/* PANEL SELECTION TABS */}
-        <div className="grid grid-cols-3 gap-2 p-1.5 bg-zinc-950/80 rounded-2xl border border-zinc-800/80 mb-6">
+        <div className="grid grid-cols-3 gap-2 p-1.5 bg-zinc-100 dark:bg-zinc-950/80 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 mb-6">
           <button
             type="button"
             onClick={() => {
               setActivePanel("STUDENT");
               setErrorMsg("");
             }}
-            className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 ${
+            className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 cursor-pointer ${
               activePanel === "STUDENT"
                 ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black shadow-lg shadow-cyan-500/20 scale-[1.02]"
-                : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-white dark:hover:bg-zinc-900/60"
             }`}
           >
-            <GraduationCap className={`h-4 w-4 mb-1 ${activePanel === "STUDENT" ? "text-black" : "text-cyan-400"}`} />
+            <GraduationCap className={`h-4 w-4 mb-1 ${activePanel === "STUDENT" ? "text-black" : "text-cyan-600 dark:text-cyan-400"}`} />
             <span>Student</span>
           </button>
 
@@ -199,13 +261,13 @@ function SignupForm() {
               setActivePanel("COMPANY");
               setErrorMsg("");
             }}
-            className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 ${
+            className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 cursor-pointer ${
               activePanel === "COMPANY"
                 ? "bg-gradient-to-r from-emerald-400 to-teal-500 text-black shadow-lg shadow-emerald-500/20 scale-[1.02]"
-                : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-white dark:hover:bg-zinc-900/60"
             }`}
           >
-            <Building2 className={`h-4 w-4 mb-1 ${activePanel === "COMPANY" ? "text-black" : "text-emerald-400"}`} />
+            <Building2 className={`h-4 w-4 mb-1 ${activePanel === "COMPANY" ? "text-black" : "text-emerald-600 dark:text-emerald-400"}`} />
             <span>Company</span>
           </button>
 
@@ -215,24 +277,24 @@ function SignupForm() {
               setActivePanel("TEACHER");
               setErrorMsg("");
             }}
-            className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 ${
+            className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 cursor-pointer ${
               activePanel === "TEACHER"
                 ? "bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg shadow-purple-500/20 scale-[1.02]"
-                : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-white dark:hover:bg-zinc-900/60"
             }`}
           >
-            <BookOpen className={`h-4 w-4 mb-1 ${activePanel === "TEACHER" ? "text-white" : "text-purple-400"}`} />
+            <BookOpen className={`h-4 w-4 mb-1 ${activePanel === "TEACHER" ? "text-white" : "text-purple-600 dark:text-purple-400"}`} />
             <span>College Teacher</span>
           </button>
         </div>
 
         {/* Dynamic Header Note */}
         {activePanel === "STUDENT" && (
-          <div className="p-4 rounded-2xl bg-cyan-950/20 border border-cyan-500/20 mb-6 flex items-start gap-3">
-            <GraduationCap className="h-5 w-5 text-cyan-400 shrink-0 mt-0.5" />
+          <div className="p-4 rounded-2xl bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-500/20 mb-6 flex items-start gap-3">
+            <GraduationCap className="h-5 w-5 text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5" />
             <div>
-              <h2 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Join as a Student Candidate</h2>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <h2 className="text-xs font-bold text-cyan-800 dark:text-cyan-300 uppercase tracking-wider">Join as a Student Candidate</h2>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">
                 Apply to verified internships, generate AI cover letters, and receive academic endorsements from your college faculty.
               </p>
             </div>
@@ -240,11 +302,11 @@ function SignupForm() {
         )}
 
         {activePanel === "COMPANY" && (
-          <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/20 mb-6 flex items-start gap-3">
-            <Building2 className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
+          <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-500/20 mb-6 flex items-start gap-3">
+            <Building2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
             <div>
-              <h2 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Join as an Employer / Company</h2>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <h2 className="text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">Join as an Employer / Company</h2>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">
                 Post internships, review pre-endorsed university student resumes, and build your candidate hiring pipeline.
               </p>
             </div>
@@ -252,11 +314,11 @@ function SignupForm() {
         )}
 
         {activePanel === "TEACHER" && (
-          <div className="p-4 rounded-2xl bg-purple-950/20 border border-purple-500/20 mb-6 flex items-start gap-3">
-            <BookOpen className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
+          <div className="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-500/20 mb-6 flex items-start gap-3">
+            <BookOpen className="h-5 w-5 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
             <div>
-              <h2 className="text-xs font-bold text-purple-300 uppercase tracking-wider">Join as College Faculty / Placement Head</h2>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <h2 className="text-xs font-bold text-purple-800 dark:text-purple-300 uppercase tracking-wider">Join as College Faculty / Placement Head</h2>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">
                 Oversee student internship applications from your university, verify credentials, and write official faculty endorsements.
               </p>
             </div>
@@ -265,8 +327,8 @@ function SignupForm() {
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="mb-6 p-3.5 rounded-xl border border-red-900/50 bg-red-950/30 text-red-400 text-xs font-semibold flex items-center gap-2.5 animate-shake">
-            <AlertCircle className="h-4.5 w-4.5 shrink-0" />
+          <div className="mb-6 p-3.5 rounded-xl border border-red-300 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 text-xs font-semibold flex items-center gap-2.5 animate-shake">
+            <AlertCircle className="h-4.5 w-4.5 shrink-0 text-red-600 dark:text-red-400" />
             <span>{errorMsg}</span>
           </div>
         )}
@@ -276,12 +338,12 @@ function SignupForm() {
           {/* Full Name & Email */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-400 uppercase tracking-wider block">
                 {activePanel === "STUDENT" ? "Student Full Name" : activePanel === "COMPANY" ? "Talent Lead / Contact" : "Faculty Name & Title"}
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <User className="h-4 w-4 text-zinc-500" />
+                  <User className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
                 </span>
                 <input
                   type="text"
@@ -289,18 +351,18 @@ function SignupForm() {
                   placeholder={activePanel === "STUDENT" ? "Aarav Sharma" : activePanel === "COMPANY" ? "Sarah Lin" : "Prof. Rajesh Verma"}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-zinc-950/90 border border-zinc-800 hover:border-zinc-700 focus:border-cyan-500 text-zinc-200 pl-10 pr-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold"
+                  className="w-full bg-zinc-50 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-cyan-500 text-zinc-900 dark:text-zinc-200 pl-10 pr-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-400 uppercase tracking-wider block">
                 {activePanel === "STUDENT" ? "Student Email" : activePanel === "COMPANY" ? "Corporate Work Email" : "Institutional Email"}
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Mail className="h-4 w-4 text-zinc-500" />
+                  <Mail className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
                 </span>
                 <input
                   type="email"
@@ -308,7 +370,7 @@ function SignupForm() {
                   placeholder={activePanel === "STUDENT" ? "student@university.edu" : activePanel === "COMPANY" ? "talent@company.com" : "faculty@university.edu"}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-zinc-950/90 border border-zinc-800 hover:border-zinc-700 focus:border-cyan-500 text-zinc-200 pl-10 pr-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold"
+                  className="w-full bg-zinc-50 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-cyan-500 text-zinc-900 dark:text-zinc-200 pl-10 pr-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                 />
               </div>
             </div>
@@ -318,7 +380,7 @@ function SignupForm() {
           {activePanel === "STUDENT" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-400 uppercase tracking-wider block">
                   College / University Name
                 </label>
                 <input
@@ -326,12 +388,12 @@ function SignupForm() {
                   placeholder="e.g. IIT Delhi, BITS Pilani, MIT"
                   value={collegeName}
                   onChange={(e) => setCollegeName(e.target.value)}
-                  className="w-full bg-zinc-950/90 border border-zinc-800 hover:border-zinc-700 focus:border-cyan-500 text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold"
+                  className="w-full bg-zinc-50 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-cyan-500 text-zinc-900 dark:text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-400 uppercase tracking-wider block">
                   Roll No / Student ID
                 </label>
                 <input
@@ -339,7 +401,7 @@ function SignupForm() {
                   placeholder="e.g. 2024CS104"
                   value={studentId}
                   onChange={(e) => setStudentId(e.target.value)}
-                  className="w-full bg-zinc-950/90 border border-zinc-800 hover:border-zinc-700 focus:border-cyan-500 text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold"
+                  className="w-full bg-zinc-50 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-cyan-500 text-zinc-900 dark:text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                 />
               </div>
             </div>
@@ -348,7 +410,7 @@ function SignupForm() {
           {activePanel === "COMPANY" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-400 uppercase tracking-wider block">
                   Company Name
                 </label>
                 <input
@@ -357,12 +419,12 @@ function SignupForm() {
                   placeholder="e.g. Google LLC, Acme Tech"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full bg-zinc-950/90 border border-zinc-800 hover:border-zinc-700 focus:border-emerald-500 text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold"
+                  className="w-full bg-zinc-50 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-emerald-500 text-zinc-900 dark:text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-400 uppercase tracking-wider block">
                   Company Website
                 </label>
                 <input
@@ -370,7 +432,7 @@ function SignupForm() {
                   placeholder="https://company.com"
                   value={website}
                   onChange={(e) => setWebsite(e.target.value)}
-                  className="w-full bg-zinc-950/90 border border-zinc-800 hover:border-zinc-700 focus:border-emerald-500 text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold"
+                  className="w-full bg-zinc-50 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-emerald-500 text-zinc-900 dark:text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                 />
               </div>
             </div>
@@ -379,7 +441,7 @@ function SignupForm() {
           {activePanel === "TEACHER" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-400 uppercase tracking-wider block">
                   College / University
                 </label>
                 <input
@@ -388,12 +450,12 @@ function SignupForm() {
                   placeholder="e.g. IIT Delhi"
                   value={collegeName}
                   onChange={(e) => setCollegeName(e.target.value)}
-                  className="w-full bg-zinc-950/90 border border-zinc-800 hover:border-zinc-700 focus:border-purple-500 text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold"
+                  className="w-full bg-zinc-50 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-purple-500 text-zinc-900 dark:text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-400 uppercase tracking-wider block">
                   Faculty Employee ID
                 </label>
                 <input
@@ -401,7 +463,7 @@ function SignupForm() {
                   placeholder="e.g. FAC-IITD-8821"
                   value={employeeId}
                   onChange={(e) => setEmployeeId(e.target.value)}
-                  className="w-full bg-zinc-950/90 border border-zinc-800 hover:border-zinc-700 focus:border-purple-500 text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold"
+                  className="w-full bg-zinc-50 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-purple-500 text-zinc-900 dark:text-zinc-200 px-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                 />
               </div>
             </div>
@@ -410,12 +472,12 @@ function SignupForm() {
           {/* Passwords */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-400 uppercase tracking-wider block">
                 Password (min. 6)
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Lock className="h-4 w-4 text-zinc-500" />
+                  <Lock className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
                 </span>
                 <input
                   type="password"
@@ -423,18 +485,18 @@ function SignupForm() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-zinc-950/90 border border-zinc-800 hover:border-zinc-700 focus:border-cyan-500 text-zinc-200 pl-10 pr-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold"
+                  className="w-full bg-zinc-50 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-cyan-500 text-zinc-900 dark:text-zinc-200 pl-10 pr-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-400 uppercase tracking-wider block">
                 Confirm Password
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Lock className="h-4 w-4 text-zinc-500" />
+                  <Lock className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
                 </span>
                 <input
                   type="password"
@@ -442,7 +504,7 @@ function SignupForm() {
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-zinc-950/90 border border-zinc-800 hover:border-zinc-700 focus:border-cyan-500 text-zinc-200 pl-10 pr-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold"
+                  className="w-full bg-zinc-50 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-cyan-500 text-zinc-900 dark:text-zinc-200 pl-10 pr-4 py-3 rounded-xl outline-none transition-all text-xs font-semibold placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                 />
               </div>
             </div>
@@ -451,7 +513,7 @@ function SignupForm() {
           <button
             type="submit"
             disabled={loading || !name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()}
-            className={`w-full mt-3 py-3.5 font-bold rounded-xl transition-all shadow-lg text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed ${buttonGradient}`}
+            className={`w-full mt-3 py-3.5 font-bold rounded-xl transition-all shadow-lg text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed cursor-pointer ${buttonGradient}`}
           >
             {loading ? (
               <>
@@ -467,11 +529,11 @@ function SignupForm() {
         </form>
 
         {/* Footer link to login */}
-        <p className="text-center text-xs text-zinc-500 font-semibold mt-6">
+        <p className="text-center text-xs text-zinc-600 dark:text-zinc-400 font-semibold mt-6">
           Already registered?{" "}
-          <Link 
-            href={`/login?role=${activePanel}`} 
-            className="font-bold text-cyan-400 hover:underline transition-colors"
+          <Link
+            href={`/login?role=${activePanel}`}
+            className="font-bold text-blue-600 dark:text-cyan-400 hover:underline transition-colors"
           >
             Sign In to Your Account
           </Link>
@@ -484,8 +546,16 @@ function SignupForm() {
 export default function SignupPage() {
   return (
     <Suspense fallback={
-      <div className="flex h-screen items-center justify-center bg-zinc-950 text-foreground flex-col gap-4 font-sans">
-        <RefreshCw className="h-8 w-8 text-cyan-400 animate-spin" />
+      <div className="flex h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex-col gap-5 font-sans">
+        <div className="h-16 w-16 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 p-2.5 flex items-center justify-center shadow-lg shadow-blue-500/10">
+          <img src="/logo.png" alt="Internverse Logo" className="h-full w-full object-contain" />
+        </div>
+        <div className="w-52 space-y-2 text-center">
+          <div className="h-1.5 w-full bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden relative">
+            <div className="h-full w-1/2 bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400 rounded-full animate-shimmer-progress" />
+          </div>
+          <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">Loading Registration...</span>
+        </div>
       </div>
     }>
       <SignupForm />

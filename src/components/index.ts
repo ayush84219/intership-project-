@@ -7,7 +7,6 @@ export { default as JobCardSkeleton } from "./JobCardSkeleton";
 export { default as LORModal } from "./LORModal";
 export { default as PostJobModal } from "./PostJobModal";
 export { default as RecruiterDashboard } from "./RecruiterDashboard";
-export { default as RoleSwitcherBar } from "./RoleSwitcherBar";
 export { default as SessionWrapper } from "./SessionWrapper";
 export { default as Sidebar } from "./Sidebar";
 export { default as TeacherDashboard } from "./TeacherDashboard";

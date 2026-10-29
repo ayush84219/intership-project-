@@ -82,31 +82,31 @@ export default function InterviewModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative text-zinc-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 sm:p-7 max-w-lg w-full shadow-xl relative text-zinc-900 dark:text-zinc-100">
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 p-1.5 text-zinc-400 hover:text-white rounded-xl bg-zinc-800/60 hover:bg-zinc-800 transition-colors"
+          className="absolute top-5 right-5 p-1.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-white rounded-lg bg-zinc-100 dark:bg-zinc-800/60 transition-colors cursor-pointer"
         >
           <X className="h-4 w-4" />
         </button>
 
         <div className="flex items-center gap-3 mb-6">
           <div
-            className={`h-12 w-12 rounded-2xl flex items-center justify-center ${
+            className={`h-11 w-11 rounded-xl flex items-center justify-center ${
               mode === "interview"
-                ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
-                : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900/50"
+                : "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/50"
             }`}
           >
-            {mode === "interview" ? <Video className="h-6 w-6" /> : <Award className="h-6 w-6" />}
+            {mode === "interview" ? <Video className="h-5 w-5" /> : <Award className="h-5 w-5" />}
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white">
+            <h3 className="text-base font-bold text-zinc-900 dark:text-white">
               {mode === "interview" ? "Schedule Technical Interview" : "Extend Official Internship Offer"}
             </h3>
-            <p className="text-xs text-zinc-400 mt-0.5">
-              Candidate: <span className="text-white font-bold">{applicant.applicantName}</span> &bull; {applicant.jobTitle}
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Candidate: <span className="text-zinc-900 dark:text-white font-semibold">{applicant.applicantName}</span> &bull; {applicant.jobTitle}
             </p>
           </div>
         </div>
@@ -116,50 +116,50 @@ export default function InterviewModal({
             <>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+                  <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 block">
                     Interview Date
                   </label>
                   <div className="relative">
-                    <Calendar className="h-4 w-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <Calendar className="h-4 w-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="date"
                       required
                       value={date}
                       onChange={(e) => setDate(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-200 outline-none focus:border-cyan-400"
+                      className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-xs font-medium text-zinc-900 dark:text-zinc-100 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+                  <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 block">
                     Time (IST / Local)
                   </label>
                   <div className="relative">
-                    <Clock className="h-4 w-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <Clock className="h-4 w-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="time"
                       required
                       value={time}
                       onChange={(e) => setTime(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-200 outline-none focus:border-cyan-400"
+                      className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-xs font-medium text-zinc-900 dark:text-zinc-100 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                     />
                   </div>
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+                <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 block">
                   Virtual Meeting Link (Google Meet / Zoom)
                 </label>
                 <div className="relative">
-                  <Video className="h-4 w-4 text-cyan-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Video className="h-4 w-4 text-blue-600 dark:text-blue-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="url"
                     required
                     value={meetLink}
                     onChange={(e) => setMeetLink(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-200 outline-none focus:border-cyan-400 font-mono"
+                    className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-xs font-medium text-zinc-900 dark:text-zinc-100 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 font-mono"
                   />
                 </div>
               </div>
@@ -168,33 +168,33 @@ export default function InterviewModal({
             <>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+                  <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 block">
                     Offered Stipend
                   </label>
                   <div className="relative">
-                    <DollarSign className="h-4 w-4 text-emerald-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <DollarSign className="h-4 w-4 text-emerald-600 dark:text-emerald-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="text"
                       required
                       value={stipend}
                       onChange={(e) => setStipend(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-200 outline-none focus:border-emerald-400"
+                      className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-xs font-medium text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+                  <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 block">
                     Joining Date
                   </label>
                   <div className="relative">
-                    <Calendar className="h-4 w-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <Calendar className="h-4 w-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="date"
                       required
                       value={joiningDate}
                       onChange={(e) => setJoiningDate(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-200 outline-none focus:border-emerald-400"
+                      className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-xs font-medium text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
                     />
                   </div>
                 </div>
@@ -203,32 +203,32 @@ export default function InterviewModal({
           )}
 
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+            <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 block">
               Candidate Message / Instructions
             </label>
             <textarea
               rows={3}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-200 outline-none focus:border-emerald-400 leading-relaxed"
+              className="w-full p-3 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-xs font-medium text-zinc-900 dark:text-zinc-100 outline-none focus:border-blue-600 leading-relaxed"
             />
           </div>
 
-          <div className="pt-3 flex items-center justify-end gap-3 border-t border-zinc-800">
+          <div className="pt-3 flex items-center justify-end gap-3 border-t border-zinc-200 dark:border-zinc-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-xs uppercase"
+              className="px-4 py-2 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-medium text-xs cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className={`px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg cursor-pointer ${
+              className={`px-4 py-2 rounded-lg font-medium text-xs flex items-center gap-2 shadow-xs cursor-pointer ${
                 mode === "interview"
-                  ? "bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black shadow-cyan-500/20"
-                  : "bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-black shadow-emerald-500/20"
+                  ? "bg-blue-600 hover:bg-blue-700 text-white"
+                  : "bg-emerald-600 hover:bg-emerald-700 text-white"
               }`}
             >
               {loading ? (
